@@ -1,6 +1,6 @@
 # Übergabe LagLab
 
-Stand 04.10.2026. Seit diesem Tag liegen die beiden Apps in zwei getrennten Projekten mit eigener Herkunft, siehe „Aufteilung in zwei Projekte“. Normale App v1.3 im Projekt `LagLab` (`laglab.github.io`), gleich mit Test-App Stand 94 bis auf Name, Schild „TEST“, Speicherorte und Versionsnummer. Test-App Stand 101 im Projekt `LagLab-Test` (`laglab-test.github.io`). Beide gibt es auch als Android-App. Die Geschichte bis Stand 94 und v1.3 liegt im alten Projekt `tiefenrausch4711-stack/turm-delay` (Ordner `DelayAnwendung`), das nur noch auf die neuen Adressen verweist.
+Stand 04.10.2026. Seit diesem Tag liegen die beiden Apps in zwei getrennten Projekten mit eigener Herkunft, siehe „Aufteilung in zwei Projekte“. Normale App v1.3 im Projekt `LagLab` (`laglab.github.io`), gleich mit Test-App Stand 94 bis auf Name, Schild „TEST“, Speicherorte und Versionsnummer. Test-App Stand 102 im Projekt `LagLab-Test` (`laglab-test.github.io`). Beide gibt es auch als Android-App. Die Geschichte bis Stand 94 und v1.3 liegt im alten Projekt `tiefenrausch4711-stack/turm-delay` (Ordner `DelayAnwendung`), das nur noch auf die neuen Adressen verweist.
 
 Für einen neuen Chat zuerst `EINSTIEG.md` lesen, sie fasst den aktuellen Stand vollständig zusammen. Diese Datei ist das ausführliche Nachschlagewerk zu allen Ständen. Lies zuerst diese Datei und danach `PLAN.md`. `PLAN.md` enthält die vollständige, abgestimmte Planung, die Testergebnisse des Tablets und die Regeln für die Kommunikation mit dem Nutzer.
 
@@ -725,6 +725,15 @@ Behebt Punkte aus der Prüfung von Stand 86 und 87.
 - Rückmeldung im Betrieb. Wurde Speichern oder Zeitlupe eine Sekunde gehalten, vibriert das Gerät 40 ms und der Knopf leuchtet 350 ms groß in hellerer Akzentfarbe auf (`confirmPress` in `app.js`, Klasse `flash`, 60 % Akzent mit Weiß). Der Knopf bleibt dabei auf der Größe beim Halten und schrumpft erst danach. Die Meldung „Gespeichert · 1“ entfällt, Fehlermeldungen wie „Puffer füllt sich noch“ bleiben. Ob das Galaxy Tab Active Pro einen Vibrationsmotor hat, ist noch nicht geprüft. Ohne Motor bleibt nur das Aufleuchten.
 - Im Browser über `navigator.vibrate`, in der Android-App über die Brücke (`native.buzz`, Nachricht `buzz`, `MainActivity.buzz` mit `VibrationEffect`). Dafür hat die Android-App neu die Erlaubnis `VIBRATE`, für die Android nicht nachfragt. Das gilt auch für die normale App beim nächsten Bau.
 - Eigene Auswahllisten für Name, Stichwort und Zeit. Android zeichnet die Liste eines `select` selbst und immer weiß. Jetzt zeigt ein Knopf `.dd` den gewählten Wert, ein Tippen öffnet `.ddPop` direkt darunter im Grau der App, mit Jahresüberschriften bei „Zeit“ und dem gewählten Eintrag in der Akzentfarbe. Das `select` bleibt unsichtbar als Ablage der Werte und meldet `change` wie bisher, `syncDd` hält den Knopf aktuell. Ein Tippen daneben schließt die Liste.
+
+## Test-App Stand 102
+
+- Der Filter „Zeit“ ist entfallen. Ersetzt wird er durch eine Ansicht. Ein Knopf `#fView` rechts neben „Videos | Bilder“ schaltet bei jedem Tippen weiter: Tage, Wochen, Monate, Jahre. Beim Öffnen der Analyse steht er immer auf Tage, unter „Bilder“ gilt dasselbe.
+- Überschriften mit Anzahl rechts. Tage: „Heute“, „Gestern“, sonst „Montag, 05.10.“ ohne Jahreszahl, so wollte es der Nutzer ausdrücklich. Wochen: „Diese Woche“, „Letzte Woche“, sonst „KW 39 · 21.–27.09.“ (ISO-Woche). Monate: „Dieser Monat“, „Letzter Monat“, sonst „August 2026“. Jahre: „Dieses Jahr“, „Letztes Jahr“, sonst „2024“.
+- Kacheln werden von Stufe zu Stufe kleiner (`#aGrid[data-view]` in `style.css`). Wochen mit Nummer und Stern, Monate nur Vorschaubild mit kleinem Stern, Jahre eine Kachel je Monat mit Anzahl (`monthTile`).
+- Ein Tippen auf eine Kachel führt eine Stufe tiefer zu genau diesem Eintrag (`drillTo`): Jahre zu Monate, Monate zu Wochen, Wochen zu Tage. Erst unter Tage öffnet sich das Video. Jeder Sprung legt einen Verlaufseintrag an, die Zurück-Geste führt eine Stufe hinauf an dieselbe Scrollstelle (`viewStack`, `viewBack`). Bei aktiver Auswahl für „Vergleichen“ wählt ein Tippen aus, außer bei den Monatskacheln unter Jahre.
+- Filterzeile: Ansicht links, Stern, Name, Stichwort, vs und × in `.fMid` mittig bis „Vergleichen“. Unter „Bilder“ bleibt „Vergleichen“ unsichtbar mit Platz (`.invis`), damit die Filter nicht springen.
+- Hilfe angepasst, das Foto `hilfe/analyse.jpg` neu aufgenommen.
 
 ## Neue Version veröffentlichen
 
