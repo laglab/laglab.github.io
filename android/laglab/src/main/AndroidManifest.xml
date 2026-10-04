@@ -5,6 +5,8 @@
     <uses-feature android:name="android.hardware.usb.host" android:required="false" />
     <uses-feature android:name="android.hardware.camera" android:required="false" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <!-- Kurzer Impuls, wenn Speichern oder Zeitlupe lang genug gehalten wurden. Android fragt dafür nicht nach. -->
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <!-- Die Kamera-Bibliothek bringt Rechte mit, die LagLab nicht braucht -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" tools:node="remove" />

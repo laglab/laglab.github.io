@@ -1,6 +1,6 @@
 # Übergabe LagLab
 
-Stand 04.10.2026. Seit diesem Tag liegen die beiden Apps in zwei getrennten Projekten mit eigener Herkunft, siehe „Aufteilung in zwei Projekte“. Normale App v1.3 im Projekt `LagLab` (`laglab.github.io`), gleich mit Test-App Stand 94 bis auf Name, Schild „TEST“, Speicherorte und Versionsnummer. Test-App Stand 100 im Projekt `LagLab-Test` (`laglab-test.github.io`). Beide gibt es auch als Android-App. Die Geschichte bis Stand 94 und v1.3 liegt im alten Projekt `tiefenrausch4711-stack/turm-delay` (Ordner `DelayAnwendung`), das nur noch auf die neuen Adressen verweist.
+Stand 04.10.2026. Seit diesem Tag liegen die beiden Apps in zwei getrennten Projekten mit eigener Herkunft, siehe „Aufteilung in zwei Projekte“. Normale App v1.3 im Projekt `LagLab` (`laglab.github.io`), gleich mit Test-App Stand 94 bis auf Name, Schild „TEST“, Speicherorte und Versionsnummer. Test-App Stand 101 im Projekt `LagLab-Test` (`laglab-test.github.io`). Beide gibt es auch als Android-App. Die Geschichte bis Stand 94 und v1.3 liegt im alten Projekt `tiefenrausch4711-stack/turm-delay` (Ordner `DelayAnwendung`), das nur noch auf die neuen Adressen verweist.
 
 Für einen neuen Chat zuerst `EINSTIEG.md` lesen, sie fasst den aktuellen Stand vollständig zusammen. Diese Datei ist das ausführliche Nachschlagewerk zu allen Ständen. Lies zuerst diese Datei und danach `PLAN.md`. `PLAN.md` enthält die vollständige, abgestimmte Planung, die Testergebnisse des Tablets und die Regeln für die Kommunikation mit dem Nutzer.
 
@@ -719,6 +719,12 @@ Behebt Punkte aus der Prüfung von Stand 86 und 87.
 - Sechs Bildschirmfotos in `hilfe/` (Live, Betrieb, Analyse, Player, Vergleich, Einstellungen), je etwa 50 KB, auch im Offline-Speicher (`FILES` in `sw.js`). Sie entstehen mit `LagLab/hilfe_fotos.mjs`. Das Skript startet Chrome ohne Fenster, spielt eine künstliche Kamera mit einem springenden Strichmännchen ein, speichert drei Videos und nimmt die Ansichten auf. Nach größeren Änderungen der Oberfläche neu aufnehmen: Vorschau der Test-App starten, dann `node hilfe_fotos.mjs ../LagLab-Test/hilfe`.
 - Die Fotos zeigen „TEST“ und „Stand 100“. Vor einer Übernahme in die normale App sollten sie mit der normalen App neu entstehen, das Skript braucht dafür Port und Speicherschlüssel der normalen App.
 - `android/laglab/build.gradle` nimmt `hilfe/*.jpg` in die APK auf, `uebernahme.py` kopiert `help.js` und den Ordner `hilfe`.
+
+## Test-App Stand 101
+
+- Rückmeldung im Betrieb. Wurde Speichern oder Zeitlupe eine Sekunde gehalten, vibriert das Gerät 40 ms und der Knopf leuchtet 350 ms groß in hellerer Akzentfarbe auf (`confirmPress` in `app.js`, Klasse `flash`, 60 % Akzent mit Weiß). Der Knopf bleibt dabei auf der Größe beim Halten und schrumpft erst danach. Die Meldung „Gespeichert · 1“ entfällt, Fehlermeldungen wie „Puffer füllt sich noch“ bleiben. Ob das Galaxy Tab Active Pro einen Vibrationsmotor hat, ist noch nicht geprüft. Ohne Motor bleibt nur das Aufleuchten.
+- Im Browser über `navigator.vibrate`, in der Android-App über die Brücke (`native.buzz`, Nachricht `buzz`, `MainActivity.buzz` mit `VibrationEffect`). Dafür hat die Android-App neu die Erlaubnis `VIBRATE`, für die Android nicht nachfragt. Das gilt auch für die normale App beim nächsten Bau.
+- Eigene Auswahllisten für Name, Stichwort und Zeit. Android zeichnet die Liste eines `select` selbst und immer weiß. Jetzt zeigt ein Knopf `.dd` den gewählten Wert, ein Tippen öffnet `.ddPop` direkt darunter im Grau der App, mit Jahresüberschriften bei „Zeit“ und dem gewählten Eintrag in der Akzentfarbe. Das `select` bleibt unsichtbar als Ablage der Werte und meldet `change` wie bisher, `syncDd` hält den Knopf aktuell. Ein Tippen daneben schließt die Liste.
 
 ## Neue Version veröffentlichen
 

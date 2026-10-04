@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
@@ -208,10 +210,20 @@ public class MainActivity extends Activity {
                 case "saveEnd":
                     io.execute(this::saveEnd);
                     break;
+                case "buzz":
+                    buzz(m.optInt("ms", 40));
+                    break;
             }
         } catch (Exception e) {
             Log.w(TAG, e);
         }
+    }
+
+    // Kurzer Impuls des Vibrationsmotors. Ohne Motor geschieht nichts.
+    private void buzz(int ms) {
+        Vibrator v = getSystemService(Vibrator.class);
+        if (v == null || !v.hasVibrator()) return;
+        v.vibrate(VibrationEffect.createOneShot(Math.max(10, Math.min(ms, 200)), VibrationEffect.DEFAULT_AMPLITUDE));
     }
 
     private void post(String s) {
