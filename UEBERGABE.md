@@ -1,6 +1,6 @@
 # Übergabe LagLab
 
-Stand 04.10.2026. Seit diesem Tag liegen die beiden Apps in zwei getrennten Projekten mit eigener Herkunft, siehe „Aufteilung in zwei Projekte“. Normale App v1.3 im Projekt `LagLab` (`laglab.github.io`), gleich mit Test-App Stand 94 bis auf Name, Schild „TEST“, Speicherorte und Versionsnummer. Test-App Stand 98 im Projekt `LagLab-Test` (`laglab-test.github.io`). Beide gibt es auch als Android-App. Die Geschichte bis Stand 94 und v1.3 liegt im alten Projekt `tiefenrausch4711-stack/turm-delay` (Ordner `DelayAnwendung`), das nur noch auf die neuen Adressen verweist.
+Stand 04.10.2026. Seit diesem Tag liegen die beiden Apps in zwei getrennten Projekten mit eigener Herkunft, siehe „Aufteilung in zwei Projekte“. Normale App v1.3 im Projekt `LagLab` (`laglab.github.io`), gleich mit Test-App Stand 94 bis auf Name, Schild „TEST“, Speicherorte und Versionsnummer. Test-App Stand 99 im Projekt `LagLab-Test` (`laglab-test.github.io`). Beide gibt es auch als Android-App. Die Geschichte bis Stand 94 und v1.3 liegt im alten Projekt `tiefenrausch4711-stack/turm-delay` (Ordner `DelayAnwendung`), das nur noch auf die neuen Adressen verweist.
 
 Für einen neuen Chat zuerst `EINSTIEG.md` lesen, sie fasst den aktuellen Stand vollständig zusammen. Diese Datei ist das ausführliche Nachschlagewerk zu allen Ständen. Lies zuerst diese Datei und danach `PLAN.md`. `PLAN.md` enthält die vollständige, abgestimmte Planung, die Testergebnisse des Tablets und die Regeln für die Kommunikation mit dem Nutzer.
 
@@ -706,6 +706,11 @@ Behebt Punkte aus der Prüfung von Stand 86 und 87.
 - Neue Zeichenfarbe Grün `#3ee05a`. Reihenfolge beim Tippen auf „Farbe“: Gelb, Rot, Grün, Türkis, Weiß.
 - „Anpassen“ beginnt beim ersten Öffnen und nach „Zurücksetzen“ mit 100 % Breite und 100 % Höhe. Vorher war die Höhe auf 16:9 gerechnet, auf dem Tablet 90 %. Schon gespeicherte Werte bleiben.
 - Filter unter „Bilder“: aus „Vergleiche“ wird ein kleiner runder Knopf „vs“ zwischen Stichwort und ×.
+
+## Test-App Stand 99
+
+- Neuer Filter „Zeit“ in der Übersicht zwischen „Stichwort“ und „vs“, unter „Videos“ und „Bilder“. Er zeigt nur Monate, in denen es zu den übrigen Filtern (Stern, Name, Stichwort, vs) Einträge gibt, neueste zuerst, nach Jahren gruppiert (`optgroup`), etwa „Oktober 2025 (8)“. Ein gewählter Monat bleibt stehen, auch wenn er durch einen anderen Filter leer wird. Das × setzt ihn zurück, jedes Öffnen der Analyse beginnt ohne ihn. `listFilter.month` als „2025-10“, `inMonth` und `fillMonths` in `analysis.js`. Bilder zählen nach dem Tag ihres Videos oder Vergleichs.
+- Grund: Über Jahre wird die Übersicht lang, und man will alte Sprünge mit neuen vergleichen. Die Auswahl für „Vergleichen“ bleibt beim Wechsel des Monats erhalten. So wählt man das heutige Video, stellt den alten Monat ein und wählt das alte dazu. Monate statt Wochen, weil Videos ohne Stern gelöscht werden und mit Stern etwa 15 pro Woche anfallen.
 
 ## Neue Version veröffentlichen
 
