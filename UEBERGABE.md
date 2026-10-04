@@ -1,6 +1,6 @@
 # Übergabe LagLab
 
-Stand 04.10.2026. Seit diesem Tag liegen die beiden Apps in zwei getrennten Projekten mit eigener Herkunft, siehe „Aufteilung in zwei Projekte“. Normale App v1.3 im Projekt `LagLab` (`laglab.github.io`), gleich mit Test-App Stand 94 bis auf Name, Schild „TEST“, Speicherorte und Versionsnummer. Test-App Stand 103 im Projekt `LagLab-Test` (`laglab-test.github.io`). Beide gibt es auch als Android-App. Die Geschichte bis Stand 94 und v1.3 liegt im alten Projekt `tiefenrausch4711-stack/turm-delay` (Ordner `DelayAnwendung`), das nur noch auf die neuen Adressen verweist.
+Stand 04.10.2026. Seit diesem Tag liegen die beiden Apps in zwei getrennten Projekten mit eigener Herkunft, siehe „Aufteilung in zwei Projekte“. Normale App v1.3 im Projekt `LagLab` (`laglab.github.io`), gleich mit Test-App Stand 94 bis auf Name, Schild „TEST“, Speicherorte und Versionsnummer. Test-App Stand 104 im Projekt `LagLab-Test` (`laglab-test.github.io`). Beide gibt es auch als Android-App. Die Geschichte bis Stand 94 und v1.3 liegt im alten Projekt `tiefenrausch4711-stack/turm-delay` (Ordner `DelayAnwendung`), das nur noch auf die neuen Adressen verweist.
 
 Für einen neuen Chat zuerst `EINSTIEG.md` lesen, sie fasst den aktuellen Stand vollständig zusammen. Diese Datei ist das ausführliche Nachschlagewerk zu allen Ständen. Lies zuerst diese Datei und danach `PLAN.md`. `PLAN.md` enthält die vollständige, abgestimmte Planung, die Testergebnisse des Tablets und die Regeln für die Kommunikation mit dem Nutzer.
 
@@ -738,6 +738,12 @@ Behebt Punkte aus der Prüfung von Stand 86 und 87.
 ## Test-App Stand 103
 
 - Das Aufleuchten nach dem Halten von Speichern und Zeitlupe war dem Nutzer zu kräftig. Jetzt leuchtet nur noch der dünne Fortschrittsring kurz in hellerer Akzentfarbe auf, die Fläche bleibt wie beim Halten. Vibration unverändert.
+
+## Test-App Stand 104
+
+- Der Knopf der Ansicht steht jetzt als Erstes in der Filtergruppe `.fMid`, links vor dem Stern. Die ganze Gruppe steht mittig zwischen „Videos | Bilder“ und „Vergleichen“.
+- „Tage“ und „Vergleichen“ sind im Grau der nicht gewählten Reiter wie „Bilder“ oder „Live“ geschrieben (`var(--mut)`). „Vergleichen“ wird bei aktiver Auswahl weiter in der Akzentfarbe gezeigt.
+- Hilfe-Fotos neu aufgenommen.
 
 ## Neue Version veröffentlichen
 
