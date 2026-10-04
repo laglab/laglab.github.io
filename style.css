@@ -23,7 +23,8 @@
 /* Hellmodus für Einstellungen, Analyse und das Fenster Darstellung. Der Betrieb bleibt dunkel. */
 html[data-theme="light"] #settings,
 html[data-theme="light"] #analysis,
-html[data-theme="light"] #uiDlg {
+html[data-theme="light"] #uiDlg,
+html[data-theme="light"] #help {
   --bg: #f2f4f6;
   --surface: #ffffff;
   --line: #dde2e7;
@@ -44,7 +45,8 @@ html[data-theme="light"] body { background: #f2f4f6; }
 /* Mittlerer Modus: graublau zwischen Hell und Dunkel, Schrift weiß. Der Betrieb bleibt dunkel. */
 html[data-theme="mid"] #settings,
 html[data-theme="mid"] #analysis,
-html[data-theme="mid"] #uiDlg {
+html[data-theme="mid"] #uiDlg,
+html[data-theme="mid"] #help {
   --bg: #3a434d;
   --surface: #46505b;
   --line: #535e6a;
@@ -60,7 +62,7 @@ html[data-theme="mid"] #uiDlg {
   --acc-text: color-mix(in srgb, var(--acc) 70%, #fff);
 }
 html[data-theme="mid"] body { background: #3a434d; }
-#settings, #analysis, #uiDlg { color: var(--fg); }
+#settings, #analysis, #uiDlg, #help { color: var(--fg); }
 * { box-sizing: border-box; }
 html, body {
   margin: 0; height: 100%; overflow: hidden;
@@ -434,7 +436,7 @@ input[type=range]::-moz-range-thumb { width: 22px; height: 22px; border-radius: 
 #aPlayer.imgMode .pctl, #aPlayer.imgMode #pRange, #aPlayer.imgMode #dCut, #aPlayer.imgMode #dStrobe { display: none; }
 /* Bildfolge vorerst ausgeblendet, an ihrer Stelle steht Raster */
 #dStrobe { display: none; }
-#pBack { min-height: 52px; padding: 0 22px; font-size: 17px; }
+#pBack { min-height: 44px; padding: 0 22px; font-size: 17px; }   /* so hoch wie die Knöpfe rechts in der Kopfzeile */
 .clipNav .nav { width: 48px; padding: 0; font-size: 26px; line-height: 1; }
 .nav:disabled { opacity: 0.3; }
 .nav:active, .tool:active { border-color: var(--acc); background: color-mix(in srgb, var(--acc) 8%, transparent); }
@@ -645,8 +647,10 @@ input[type=range]::-moz-range-thumb { width: 22px; height: 22px; border-radius: 
 #fCmp { margin-left: auto; }
 #fCmpGo { background: var(--acc); border-color: var(--acc); color: var(--acc-ink); }
 #fCmpGo:disabled { opacity: 0.45; }
+/* Filter für Vergleichsbilder, klein und rund wie der Stern, „vs“ versteht man in jeder Sprache */
+#fCmpF { width: 44px; padding: 0; display: grid; place-items: center; }
 #fCmpF:disabled { opacity: 0.4; }
-/* Filter zurücksetzen, klein und rund, direkt rechts neben Stichwort */
+/* Filter zurücksetzen, klein und rund, rechts neben Stichwort und vs */
 #fReset { width: 44px; padding: 0; display: grid; place-items: center; }
 #fReset svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; }
 #fReset:disabled { opacity: 0.35; }
@@ -731,13 +735,13 @@ input[type=range]::-moz-range-thumb { width: 22px; height: 22px; border-radius: 
 #splash.out { opacity: 0; pointer-events: none; }
 
 /* Umschaltung „Video | Bilder“ in der Kopfzeile des Fensters */
-#pKind button { min-width: 84px; min-height: 40px; padding: 0 14px; }
+#pKind button { min-width: 84px; min-height: 0; padding: 0 14px; }
 #pKind button:disabled { opacity: 0.35; }
 #pName, #pProp { width: 150px; }
 /* Kopfzeile in zwei Bereichen. Links Zurück, „Video | Bilder“ und der Titel, alles andere rechts.
    Links bleibt mindestens Platz für Zurück und den Umschalter, nur der Titel wird gekürzt. */
 .pbar { display: grid; grid-template-columns: minmax(min-content, 1fr) minmax(0, max-content); }
-#pKind { flex: 0 0 auto; }
+#pKind { flex: 0 0 auto; height: 44px; }   /* so hoch wie die Knöpfe rechts, die Teile füllen die Höhe */
 .pL, .pR { display: flex; align-items: center; gap: 8px; min-width: 0; }
 .pR { justify-content: flex-end; grid-column: 2; }
 /* Name und Stichwort werden bei Platzmangel schmaler, damit die Kopfzeile in einer Zeile bleibt */
@@ -779,13 +783,11 @@ html.big #pTools {
 }
 html.big #dUndo,
 html.big #dSave,
-html.big #dCut { grid-column-start: 1; }   /* Schneiden beginnt eine neue Reihe und steht neben Raster */
+html.big #dGrid { grid-column-start: 1; }   /* Raster beginnt eine neue Reihe, daneben Farbe und Schneiden */
 /* In Spalten steht Leeren neben Rückgängig und braucht denselben Abstand nach oben */
 html.big #dClear { margin-top: var(--grp, 16px); }
-/* In Spalten stehen Lot und Waage in einer Reihe. Farbe rückt dafür vor das Lot, neben Winkel. */
-html.big [data-tool="plumb"], html.big [data-tool="level"] { order: 1; }
+/* In Spalten stehen Lot und Waage in einer Reihe */
 html.big [data-tool="plumb"] { grid-column-start: 1; }
-html.big #dCut, html.big #dGrid, html.big #dStrobe, html.big #dUndo, html.big #dClear, html.big #dSave { order: 2; }
 /* Beim Schneiden und bei der Bildfolge kommt unten eine Leiste dazu, dann werden die Werkzeuge flacher */
 #aPlayer:has(#pRange:not(.hidden)) .tl { min-height: 40px; }
 #pTools { scrollbar-width: none; }
@@ -894,11 +896,9 @@ html.tvfit #out { object-fit: fill; }
 /* Werkzeuge im niedrigen Rahmen: zwei Spalten, bei 150 % drei */
 @container app (max-height: 760px) {
   #pTools { width: 178px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-content: start; --grp: 8px; }
-  #dUndo, #dSave, #dCut { grid-column-start: 1; }
+  #dUndo, #dSave, #dGrid { grid-column-start: 1; }
   #dClear { margin-top: var(--grp, 16px); }
-  [data-tool="plumb"], [data-tool="level"] { order: 1; }
   [data-tool="plumb"] { grid-column-start: 1; }
-  #dCut, #dGrid, #dStrobe, #dUndo, #dClear, #dSave { order: 2; }
   html[data-size="2"] .tl { min-height: 42px; }
   html[data-size="3"] #pTools { width: 260px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
   html[data-size="3"] .tl { min-height: 40px; }
@@ -915,3 +915,121 @@ html.tvfit #out { object-fit: fill; }
 }
 /* Ab „Groß“ teilen sich Name und Stichwort die zweite Zeile, auch wenn der Platz knapp ist */
 
+/* Einstellungen: alle Knöpfe so hoch wie „Videos | Bilder“ in der Analyse. Einzelne Knöpfe haben die Höhe
+   der ganzen Umschaltung, die Teile einer Umschaltung die Höhe ihrer Knöpfe. Steht am Ende und mit #uiMain,
+   damit es die Regeln für Größen und niedrige Rahmen überstimmt. */
+#uiMain .tool { height: 46px; min-height: 0; }
+#uiMain #langBtn, #uiMain #slowSet { flex: 0 0 auto; }   /* stehen in einer Spalte und sollen dort nicht in die Höhe wachsen */
+#uiMain .seg { height: 46px; }
+#uiMain .seg button { min-height: 0; }
+#uiMain .step.xs { width: 46px; height: 46px; flex-basis: 46px; }
+
+/* ---------- Hilfe ---------- */
+/* Das „i“ rechts neben der Überschrift der Einstellungen, klein und rund wie das × im Filter */
+.dlgHead { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+#uiHelp { width: 36px; min-height: 36px; height: 36px; padding: 0; border-radius: 50%; font: italic 700 17px Georgia, serif; }
+/* Großes Fenster über fast den ganzen Bildschirm, links das Verzeichnis, rechts der Text */
+#help {
+  position: fixed; inset: 0; z-index: 30;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0, 0, 0, 0.55);
+}
+.helpWin {
+  zoom: var(--z);
+  display: grid; grid-template-columns: 210px minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr);
+  background: var(--surface); color: var(--fg);
+  border: 1px solid var(--line-2); border-radius: 14px; overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+}
+/* Mit zoom wächst auch das Fenster, deshalb wird seine Größe durch --z geteilt */
+.helpWin { width: calc(min(1120px, 96cqw) / var(--z)); height: calc(94cqh / var(--z)); }
+.helpHead {
+  grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px 12px 22px; border-bottom: 1px solid var(--line);
+}
+.helpHead h2 { margin: 0; font-size: 18px; font-weight: 650; }
+#helpClose { width: 44px; padding: 0; display: grid; place-items: center; }
+#helpClose svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; }
+#helpNav { display: flex; flex-direction: column; gap: 2px; padding: 12px 10px; border-right: 1px solid var(--line); overflow-y: auto; }
+#helpNav button { text-align: left; padding: 9px 10px; border-radius: 8px; color: var(--mut); font-size: 15px; }
+/* Nummer in eigener Spalte, eine zweite Zeile beginnt bündig unter dem ersten Wort */
+#helpNav button, #helpBody h3 { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: baseline; }
+#helpNav button.on { background: color-mix(in srgb, var(--acc) 16%, transparent); color: var(--fg); font-weight: 650; }
+#helpNav .no, #helpBody h3 .no { font: 12px var(--mono); color: var(--acc-text); margin-right: 8px; }
+#helpBody { overflow-y: auto; padding: 8px 28px 40px; font-size: 16px; line-height: 1.5; }
+#helpBody section { max-width: 760px; padding-top: 14px; }
+#helpBody section + section { margin-top: 18px; border-top: 1px solid var(--line); }
+#helpBody h3 { margin: 6px 0 8px; font-size: 19px; font-weight: 650; }
+#helpBody p { margin: 0 0 10px; }
+#helpBody ul, #helpBody ol { margin: 0 0 10px; padding-left: 22px; }
+#helpBody li { margin-bottom: 4px; }
+#helpBody dl { margin: 4px 0 12px; display: grid; grid-template-columns: minmax(140px, max-content) minmax(0, 1fr); gap: 8px 18px; }
+#helpBody dt { font-weight: 650; display: flex; align-items: flex-start; gap: 6px; }
+#helpBody dd { margin: 0; color: var(--fg); }
+/* Symbole aus der App neben dem Begriff */
+#helpBody dt i { flex: 0 0 auto; display: inline-grid; place-items: center; width: 26px; height: 24px; color: var(--mut); }
+#helpBody dt i svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+#helpBody dt i .dot { width: 18px; height: 18px; border-radius: 50%; background: #ffd21f; }
+#helpBody dt i[data-ico="#pPlay .i-play"] svg, #helpBody dt i[data-ico="#pPrev"] svg, #helpBody dt i[data-ico="#pNext"] svg { fill: currentColor; stroke: none; }
+
+/* Lang genug gehalten: nur der dünne Fortschrittsring leuchtet kurz in hellerer Akzentfarbe auf */
+#saveBtn, #slowBtn { --flash: color-mix(in srgb, var(--acc) 60%, #fff); }
+#saveBtn.flash, #slowBtn.flash { transform: scale(4.2); }   /* bleibt groß wie beim Halten, schrumpft danach */
+#saveBtn.flash .prog, #slowBtn.flash .prog { stroke: var(--flash); stroke-dashoffset: 0; transition: none; }
+#saveBtn .prog, #slowBtn .prog { transition: stroke .3s; }
+
+/* ---------- Eigene Auswahllisten der Filter ---------- */
+/* Android zeichnet die Liste eines select selbst und immer weiß. Das select bleibt unsichtbar als Ablage der Werte. */
+.ddSrc { display: none !important; }
+.filters { position: relative; }
+.dd {
+  position: relative; min-height: 44px; max-width: 240px; padding: 0 34px 0 14px; border-radius: 22px;
+  border: 1px solid var(--line-2); background: var(--surface); color: var(--fg);
+  font: 600 15px var(--sans); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.dd::after {
+  content: ""; position: absolute; right: 15px; top: 50%; width: 7px; height: 7px; margin-top: -6px;
+  border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); opacity: 0.8;
+}
+.dd.open { border-color: var(--acc); }
+.dd.open::after { transform: rotate(225deg); margin-top: -2px; }
+.dd:disabled { opacity: 0.4; }
+.ddPop {
+  position: absolute; z-index: 15; max-height: 380px; overflow-y: auto; padding: 6px;
+  background: var(--surface); border: 1px solid var(--line-2); border-radius: 12px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.4);
+}
+.ddItem {
+  display: block; width: 100%; min-height: 44px; padding: 0 14px; border-radius: 8px; text-align: left;
+  color: var(--fg); font: 500 15px var(--sans); white-space: nowrap;
+}
+.ddItem:active { background: var(--tint); }
+.ddItem.on { background: color-mix(in srgb, var(--acc) 16%, transparent); box-shadow: inset 0 0 0 1.5px var(--acc-text); font-weight: 650; }
+.ddGroup { padding: 10px 14px 4px; font: 12px var(--mono); letter-spacing: 0.08em; color: var(--mut); }
+
+/* ---------- Ansichten der Übersicht ---------- */
+/* Ansicht und Filter mittig zwischen „Videos | Bilder“ und „Vergleichen“ */
+.filters .fMid { flex: 1; min-width: 0; display: flex; gap: 10px; align-items: center; justify-content: center; }
+.invis { visibility: hidden; }
+#fView { min-width: 96px; }
+/* Ansicht und Vergleichen im Grau der nicht gewählten Reiter wie „Bilder“ oder „Live“ */
+#fView, #fCmp:not(.on) { color: var(--mut); }
+.day { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.day .cnt { font: 12px var(--mono); letter-spacing: 0.04em; text-transform: none; color: var(--mut); }
+.card .thStar { display: none; position: absolute; right: 4px; top: 1px; font-size: 15px; color: var(--warn); text-shadow: 0 0 3px rgba(0, 0, 0, 0.9); }
+/* Wochen: kleinere Kacheln mit Nummer und Stern */
+#aGrid[data-view="week"] .cards { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+#aGrid[data-view="week"] .card .time, #aGrid[data-view="week"] .card .nm, #aGrid[data-view="week"] .card .imgs { display: none; }
+#aGrid[data-view="week"] .card .info { padding-left: 10px; }
+#aGrid[data-view="week"] .card .info b { font-size: 15px; }
+#aGrid[data-view="week"] .card .info .star { width: 36px; height: 36px; font-size: 20px; }
+/* Monate: nur Vorschaubilder, der Stern klein darauf */
+#aGrid[data-view="month"] .cards { grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 6px; }
+#aGrid[data-view="month"] .card { border-radius: 6px; }
+#aGrid[data-view="month"] .card .info, #aGrid[data-view="month"] .card .dur, #aGrid[data-view="month"] .card .imgs { display: none; }
+#aGrid[data-view="month"] .card .thStar { display: block; }
+#aGrid[data-view="month"] .card .selNo { left: 4px; top: 4px; width: 24px; height: 24px; font-size: 14px; }
+/* Jahre: eine Kachel je Monat mit Anzahl */
+#aGrid[data-view="year"] .cards { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
+.mTile .info { padding: 8px 12px; }
+.mTile .info b { font-size: 15px; }

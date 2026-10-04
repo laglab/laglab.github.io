@@ -3,7 +3,7 @@
 // Zeichnen, Winkel messen und Zoom im Standbild der Analyse. Nutzt pc, pCanvas und Hilfen aus analysis.js.
 // Zeichnungen liegen in Bildpunkten des Videos und bleiben so auch beim Zoomen an ihrer Stelle.
 
-const COLORS = ['#ffd21f', '#ff4d4d', '#37d3c4', '#ffffff'];
+const COLORS = ['#ffd21f', '#ff4d4d', '#3ee05a', '#37d3c4', '#ffffff'];   // Gelb, Rot, Grün, Türkis, Weiß
 const HANDLE_PX = 30;       // so nah muss ein Finger an einem Punkt sein, um ihn zu verschieben
 const LINE_PX = 4;          // Strichstärke auf dem Bildschirm, unabhängig vom Zoom
 const MAX_ZOOM = 8;
@@ -11,9 +11,9 @@ const DOUBLE_TAP_MS = 300;
 
 const dStage = $('pStage'), dView = $('pView'), dCanvas = $('pDraw');
 const dctx = dCanvas.getContext('2d');
-let tool = 'view';          // view (kein Werkzeug), free, line, arc, angle, plumb oder level
+let tool = 'view';          // view (kein Werkzeug), free, line, arc, angle, circle, plumb oder level
 let colorIdx = 0;
-let shapes = [];            // { type: 'free' | 'line' | 'arc' | 'angle' | 'plumb' | 'level', pts: [[x, y], ...], color }
+let shapes = [];            // { type: 'free' | 'line' | 'arc' | 'angle' | 'circle' | 'plumb' | 'level', pts: [[x, y], ...], color }
 let pending = null;         // Form, die gerade entsteht
 let placing = false;        // der letzte Punkt von pending folgt noch dem Finger
 let drag = null;            // verschobener Punkt { shape, idx }
@@ -101,6 +101,12 @@ function drawShape(s, k, handles) {
     dctx.setLineDash([16 * k, 10 * k]);
     stroke(lev);
     dctx.setLineDash([]);
+  } else if (s.type === 'circle') {
+    // Kreis um den ersten Punkt, der zweite liegt auf dem Rand und bestimmt die Größe
+    const [c, e] = pts;
+    const ring = new Path2D();
+    ring.arc(c[0], c[1], Math.hypot(e[0] - c[0], e[1] - c[1]), 0, 2 * Math.PI);
+    stroke(ring);
   } else if (s.type === 'arc' && pts.length === 4) {
     // Bogen mit zwei Griffen: glatte Kurve dritten Grades durch Anfang, beide Griffe und Ende.
     // Mit dem ersten Griff formt man den Steigflug, mit dem zweiten den Abflug. Wo die Kurve einen Griff trifft,
@@ -284,6 +290,7 @@ function drawDown(e) {
   if (tool === 'free') pending = { type: 'free', pts: [p], color };
   else if (tool === 'line') pending = { type: 'line', pts: [p, p.slice()], color };
   else if (tool === 'arc') pending = { type: 'arc', pts: [p, p.slice()], color };   // erst eine Linie, die zwei Griffe kommen beim Loslassen
+  else if (tool === 'circle') pending = { type: 'circle', pts: [p, p.slice()], color };   // der Finger setzt die Mitte, Ziehen bestimmt die Größe
   else if (tool === 'plumb' || tool === 'level') { pending = { type: tool, pts: [p], color }; placing = true; }
   else if (tool === 'angle') {
     if (!pending) pending = { type: 'angle', pts: [], color };
@@ -295,13 +302,22 @@ function drawDown(e) {
 
 function drawMove(e) {
   const p = videoPoint(e);
-  if (drag) { drag.shape.pts[drag.idx] = p; renderDrawing(); return; }
+  if (drag) {
+    const s = drag.shape;
+    // Der Griff in der Mitte verschiebt den ganzen Kreis, der Griff am Rand ändert die Größe
+    if (s.type === 'circle' && drag.idx === 0) {
+      const [c, e] = s.pts;
+      s.pts = [p, [e[0] + p[0] - c[0], e[1] + p[1] - c[1]]];
+    } else s.pts[drag.idx] = p;
+    renderDrawing();
+    return;
+  }
   if (!pending) return;
   if (pending.type === 'free') {
     const last = pending.pts[pending.pts.length - 1];
     if (Math.hypot(p[0] - last[0], p[1] - last[1]) < 2 * pxScale()) return;
     pending.pts.push(p);
-  } else if (pending.type === 'line' || pending.type === 'arc') {
+  } else if (pending.type === 'line' || pending.type === 'arc' || pending.type === 'circle') {
     pending.pts[1] = p;
   } else if (pending.type === 'plumb' || pending.type === 'level') {
     pending.pts[0] = p;
@@ -315,7 +331,7 @@ function drawUp() {
   if (drag) { drag = null; return; }
   if (!pending) return;
   if (pending.type === 'free' || pending.type === 'plumb' || pending.type === 'level') commit();
-  else if (pending.type === 'line' || pending.type === 'arc') {
+  else if (pending.type === 'line' || pending.type === 'arc' || pending.type === 'circle') {
     const [a, b] = pending.pts;
     if (Math.hypot(a[0] - b[0], a[1] - b[1]) > 10 * pxScale()) {
       // Beim Bogen kommen zwei Griffe auf die Linie, bei einem und bei zwei Dritteln. Zieht man sie, wölbt sich die Linie.

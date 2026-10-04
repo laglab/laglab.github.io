@@ -207,15 +207,16 @@ function makeMp4(cfg, frames, bytes, skip = 0) {
   return new Blob([ftyp, moov(ftyp.length + moovLen + 8), mdatHead, bytes], { type: 'video/mp4' });
 }
 
-// 2026-10-02_v3_Teo_Kopfsprung.mp4 und 2026-10-02_v3.1_Teo_Kopfsprung.jpg.
+// 2026-10-02_3_Teo_Kopfsprung.mp4 und 2026-10-02_3.1_Teo_Kopfsprung.jpg, Vergleichsbilder 2026-10-02_vs1.1.jpg.
 // Fehlen Name oder Stichwort, entfällt der jeweilige Teil.
 const cleanPart = v => (v || '').replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-|-$/g, '');
 function fileName(c, label, ext) {
   const parts = [c.day, label.replace(/\s+/g, '-'), cleanPart(c.name), cleanPart(c.prop)].filter(Boolean);
   return parts.join('_') + ext;
 }
-const clipLabel = c => 'v' + c.nr;
-const imageLabel = (c, im) => (isCmp(im) ? `vgl${im.nr}.${im.n}` : `v${c.nr}.${im.n}`);
+// Videos und ihre Bilder tragen nur Zahlen, Vergleiche „vs“ davor. Gespeichert sind nur die Nummern.
+const clipLabel = c => String(c.nr);
+const imageLabel = (c, im) => (isCmp(im) ? `vs${im.nr}.${im.n}` : `${c.nr}.${im.n}`);
 const clipFileName = c => fileName(c, clipLabel(c), '.mp4');
 const imageFileName = (c, im) => fileName(c, imageLabel(c, im), '.jpg');
 
@@ -232,6 +233,8 @@ function enterAnalysis() {
   // Jedes Öffnen beginnt mit allen Videos, ohne Filter und oben in der Liste
   Object.assign(listFilter, { kind: 'videos', star: false, name: '', prop: '', cmp: false });
   cmpSelect = null;
+  listView = 'day';   // jedes Öffnen beginnt mit der Ansicht Tage
+  viewStack = [];
   listScroll = null;
   $('aGrid').scrollTop = 0;
   history.pushState({ v: 'list' }, '');
@@ -360,21 +363,31 @@ function renderList(clips) {
   $('aEmpty').textContent = images
     ? tr(all ? 'Keine Bilder für diese Auswahl.' : 'Noch keine Bilder gespeichert.')
     : tr(all ? 'Keine Videos für diese Auswahl.' : 'Noch keine Videos gespeichert.');
-  let day = null, row = null;
+  // Gruppen nach der Ansicht, rechts in der Überschrift die Anzahl. Bei Jahren eine Kachel je Monat.
+  grid.dataset.view = listView;
+  const counts = new Map();
+  for (const x of items) { const k = groupKeyOf(x.c.day); counts.set(k, (counts.get(k) || 0) + 1); }
+  let key = null, row = null, month = null, monthItems = null;
   for (const x of items) {
-    if (x.c.day !== day) {
-      day = x.c.day;
-      grid.append(el('h3', 'day', dayLabel(day)));
+    const k = groupKeyOf(x.c.day);
+    if (k !== key) {
+      key = k;
+      grid.append(groupHead(k, counts.get(k), images));
       row = el('div', 'cards');
       grid.append(row);
+      month = null;
     }
-    row.append(x.im ? imageCard(x.c, x.im) : clipCard(x.c));
+    if (listView !== 'year') { row.append(x.im ? imageCard(x.c, x.im) : clipCard(x.c)); continue; }
+    const m = x.c.day.slice(0, 7);
+    if (m !== month) { month = m; monthItems = []; row.append(monthTile(m, monthItems)); }
+    monthItems.push(x);
   }
+  for (const t of grid.querySelectorAll('.mTile')) t.fill();
   renderCmpSelect();   // Auswahl für den Vergleich bleibt beim Neuzeichnen sichtbar
 }
 
 // Neueste Videos zuerst, die Bilder eines Videos in ihrer Reihenfolge v3.1, v3.2, v3.3.
-// Bilder eines Vergleichs stehen zusammen wie die Bilder eines Videos, vgl1.1 vor vgl1.2.
+// Bilder eines Vergleichs stehen zusammen wie die Bilder eines Videos, vs1.1 vor vs1.2.
 function sortItems(items) {
   const groupKey = x => (isCmp(x.im) ? 'vgl' + x.im.day + '#' + x.im.nr : 'clip' + x.c.id);
   const groupTime = new Map();
@@ -398,6 +411,179 @@ function fillSelect(sel, label, values, current) {
   for (const v of values) sel.append(new Option(v, v));
   sel.value = current;
   sel.disabled = !values.length;
+  syncDd(sel);
+}
+
+// ---------- Eigene Auswahllisten ----------
+// Android zeichnet die Liste eines <select> selbst und immer weiß. Die Filter zeigen deshalb einen Knopf und eine
+// eigene Liste im Grau der App. Das <select> bleibt unsichtbar als Ablage der Werte und meldet „change“ wie bisher.
+const ddPop = el('div', 'ddPop hidden');
+ddPop.setAttribute('role', 'listbox');
+let ddOpen = null;
+
+function makeDd(sel) {
+  const b = el('button', 'dd');
+  b.type = 'button';
+  b.setAttribute('aria-haspopup', 'listbox');
+  sel.classList.add('ddSrc');
+  sel.after(b);
+  sel.dd = b;
+  b.addEventListener('click', () => (ddOpen === sel ? closeDd() : openDd(sel)));
+}
+
+function syncDd(sel) {
+  const b = sel.dd;
+  if (!b) return;
+  const o = sel.selectedOptions[0];
+  b.textContent = o ? o.textContent : '';
+  b.disabled = sel.disabled;
+  b.setAttribute('aria-label', tr(sel.getAttribute('aria-label') || ''));
+  if (ddOpen === sel) closeDd();
+}
+
+function ddItem(sel, o) {
+  const b = el('button', 'ddItem' + (o.value === sel.value ? ' on' : ''), o.textContent);
+  b.type = 'button';
+  b.setAttribute('role', 'option');
+  b.addEventListener('click', () => {
+    closeDd();
+    if (sel.value === o.value) return;
+    sel.value = o.value;
+    sel.dispatchEvent(new Event('change'));
+  });
+  return b;
+}
+
+// Die Liste öffnet direkt unter dem Knopf, mit Überschriften für Gruppen wie die Jahre bei „Zeit“
+function openDd(sel) {
+  closeDd();
+  ddPop.textContent = '';
+  for (const n of sel.children) {
+    if (n.tagName === 'OPTGROUP') {
+      ddPop.append(el('div', 'ddGroup', n.label));
+      for (const o of n.children) ddPop.append(ddItem(sel, o));
+    } else ddPop.append(ddItem(sel, n));
+  }
+  const b = sel.dd;
+  b.parentElement.append(ddPop);
+  Object.assign(ddPop.style, { left: b.offsetLeft + 'px', top: b.offsetTop + b.offsetHeight + 6 + 'px', minWidth: b.offsetWidth + 'px' });
+  ddPop.classList.remove('hidden');
+  b.classList.add('open');
+  ddOpen = sel;
+  const on = ddPop.querySelector('.on');
+  if (on) ddPop.scrollTop = on.offsetTop - ddPop.clientHeight / 2;
+}
+
+function closeDd() {
+  if (!ddOpen) return;
+  ddPop.classList.add('hidden');
+  ddOpen.dd.classList.remove('open');
+  ddOpen = null;
+}
+// Ein Tippen daneben schließt die Liste
+document.addEventListener('pointerdown', e => { if (ddOpen && !e.target.closest('.ddPop, .dd')) closeDd(); }, true);
+for (const id of ['fName', 'fProp']) makeDd($(id));
+
+// ---------- Ansichten Tage, Wochen, Monate, Jahre ----------
+// Die Ansicht fasst die Liste unterschiedlich zusammen. Ein Tippen auf eine Kachel führt eine Stufe tiefer zu
+// genau diesem Video, erst unter Tage öffnet es sich. Die Zurück-Geste führt wieder hinauf an dieselbe Stelle.
+const VIEWS = ['day', 'week', 'month', 'year'];
+const VIEW_LABEL = { day: 'Tage', week: 'Wochen', month: 'Monate', year: 'Jahre' };
+let listView = 'day';
+let viewStack = [];   // Ansicht und Scrollstelle vor jedem Sprung in eine tiefere Stufe
+
+const dayDate = day => { const [y, m, d] = day.split('-').map(Number); return new Date(y, m - 1, d); };
+// Montag der Woche
+function weekStart(day) { const d = dayDate(day); d.setDate(d.getDate() - (d.getDay() + 6) % 7); return d; }
+// Kalenderwoche nach ISO 8601, die Woche mit dem 4. Januar ist die erste
+function isoWeek(d) {
+  const t = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 3 - (d.getDay() + 6) % 7);
+  const w1 = new Date(t.getFullYear(), 0, 4);
+  return 1 + Math.round(((t - w1) / 864e5 - 3 + (w1.getDay() + 6) % 7) / 7);
+}
+
+function groupKeyOf(day) {
+  if (listView === 'day') return day;
+  if (listView === 'week') return dayKey(weekStart(day));
+  if (listView === 'month') return day.slice(0, 7);
+  return day.slice(0, 4);
+}
+
+// Heute, Gestern, Montag, 05.10. · Diese Woche, KW 39 · 21.–27.09. · Dieser Monat, August 2026 · Dieses Jahr, 2024
+function groupLabel(key) {
+  const now = new Date(), today = dayKey(now);
+  const dm = d => `${pad2(d.getDate())}.${pad2(d.getMonth() + 1)}.`;
+  const ago = (y, m, d) => dayKey(new Date(now.getFullYear() + y, now.getMonth() + m, now.getDate() + d));
+  if (listView === 'day') {
+    if (key === today) return tr('Heute');
+    if (key === ago(0, 0, -1)) return tr('Gestern');
+    const d = dayDate(key);
+    return d.toLocaleDateString(LOCALE[lang], { weekday: 'long' }) + ', ' + dm(d);
+  }
+  if (listView === 'week') {
+    const thisWeek = dayKey(weekStart(today));
+    if (key === thisWeek) return tr('Diese Woche');
+    const last = dayDate(thisWeek); last.setDate(last.getDate() - 7);
+    if (key === dayKey(last)) return tr('Letzte Woche');
+    const a = dayDate(key), b = dayDate(key); b.setDate(b.getDate() + 6);
+    const range = a.getMonth() === b.getMonth() ? `${pad2(a.getDate())}.–${dm(b)}` : `${dm(a)}–${dm(b)}`;
+    return tr('KW {0}', isoWeek(a)) + ' · ' + range;
+  }
+  if (listView === 'month') {
+    if (key === today.slice(0, 7)) return tr('Dieser Monat');
+    if (key === ago(0, -1, 1 - now.getDate()).slice(0, 7)) return tr('Letzter Monat');
+    const [y, m] = key.split('-').map(Number);
+    return new Date(y, m - 1, 1).toLocaleDateString(LOCALE[lang], { month: 'long', year: 'numeric' });
+  }
+  if (+key === now.getFullYear()) return tr('Dieses Jahr');
+  if (+key === now.getFullYear() - 1) return tr('Letztes Jahr');
+  return key;
+}
+
+const countText = (n, images) => images
+  ? (n === 1 ? tr('1 Bild') : tr('{0} Bilder', n))
+  : (n === 1 ? tr('1 Video') : tr('{0} Videos', n));
+
+function groupHead(key, n, images) {
+  const h = el('h3', 'day');
+  h.dataset.key = key;
+  h.append(el('span', '', groupLabel(key)), el('span', 'cnt', countText(n, images)));
+  return h;
+}
+
+// Unter Jahre steht jeder Monat als eine Kachel mit dem neuesten Vorschaubild und der Anzahl
+function monthTile(m, list) {
+  const card = el('div', 'card mTile');
+  const th = el('div', 'th');
+  const info = el('div', 'info');
+  const [y, mo] = m.split('-').map(Number);
+  info.append(el('b', '', new Date(y, mo - 1, 1).toLocaleDateString(LOCALE[lang], { month: 'long' })));
+  card.append(th, info);
+  // Füllen erst, wenn alle Einträge des Monats gesammelt sind
+  card.fill = () => {
+    const t = list.map(x => (x.im ? x.im.thumb : x.c.thumb)).find(Boolean);
+    if (t) setThumb(th, t);
+    info.append(el('span', 'time', String(list.length)));
+  };
+  card.addEventListener('click', () => drillTo(`.day[data-key="${m}"]`, 'month'));
+  return card;
+}
+
+// Eine Stufe tiefer, zu dem Video, Bild oder Monat, das angetippt wurde
+function drillTo(target, view = listView === 'month' ? 'week' : 'day') {
+  viewStack.push({ view: listView, scroll: $('aGrid').scrollTop });
+  history.pushState({ v: 'list' }, '');
+  listView = view;
+  renderList(listClips);
+  const t = $('aGrid').querySelector(target);
+  if (t) t.scrollIntoView({ block: t.classList.contains('day') ? 'start' : 'center' });
+}
+
+function viewBack() {
+  const s = viewStack.pop();
+  listView = s.view;
+  renderList(listClips);
+  $('aGrid').scrollTop = s.scroll;
 }
 
 const sortedValues = (clips, key) => [...new Set(clips.map(c => c[key]).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'de'));
@@ -410,9 +596,10 @@ function renderFilter(clips) {
   if (listFilter.prop && !props.includes(listFilter.prop)) listFilter.prop = '';
   fillSelect($('fName'), tr('Name'), names, listFilter.name);
   fillSelect($('fProp'), tr('Stichwort'), props, listFilter.prop);
+  $('fView').textContent = tr(VIEW_LABEL[listView]);
   $('fStar').classList.toggle('on', listFilter.star);
   $('fStar').disabled = !clips.length && !listImages.length;
-  // Vergleiche ist unter „Bilder“ ein Filter neben dem Stern, ausgegraut, solange es kein Vergleichsbild gibt
+  // „vs“ ist unter „Bilder“ ein Filter für Vergleichsbilder zwischen Stichwort und ×, ausgegraut, solange es keine gibt
   const images = listFilter.kind === 'images', hasCmp = listImages.some(isCmp);
   if (!hasCmp) listFilter.cmp = false;
   $('fCmpF').classList.toggle('hidden', !images);
@@ -498,6 +685,13 @@ $('fReset').addEventListener('click', () => {
 });
 $('fName').addEventListener('change', e => { listFilter.name = e.target.value; renderList(listClips); });
 $('fProp').addEventListener('change', e => { listFilter.prop = e.target.value; renderList(listClips); });
+// Jedes Tippen schaltet die Ansicht eine Stufe weiter. Die Liste beginnt dann oben.
+$('fView').addEventListener('click', () => {
+  listView = VIEWS[(VIEWS.indexOf(listView) + 1) % VIEWS.length];
+  viewStack = [];
+  renderList(listClips);
+  $('aGrid').scrollTop = 0;
+});
 $('fKind').addEventListener('click', e => {
   const b = e.target.closest('button');
   if (!b || b.dataset.k === listFilter.kind) return;
@@ -541,9 +735,11 @@ function clipCard(c) {
   info.append(star);
   const n = listImages.filter(im => im.clipId === c.id).length;
   if (n) th.append(el('span', 'imgs', n === 1 ? tr('1 Bild') : tr('{0} Bilder', n)));
+  if (c.star) th.append(el('span', 'thStar', '★'));
   card.append(th, info);
   card.addEventListener('click', () => {
     if (cmpSelect) { toggleCmpSelect(c.id); return; }
+    if (listView !== 'day') { drillTo(`.card[data-id="${c.id}"]`); return; }
     listScroll = $('aGrid').scrollTop;
     history.pushState({ v: 'player' }, '');
     openClip(c);
@@ -553,15 +749,17 @@ function clipCard(c) {
 
 function imageCard(c, im) {
   const card = el('div', 'card');
+  card.dataset.img = im.id;
   const th = el('div', 'th');
   if (im.thumb) setThumb(th, im.thumb);
   const info = el('div', 'info');
   info.append(el('b', '', imageLabel(c, im)), el('span', 'time', hhmm(c.created)));
   const who = [c.name, c.prop].filter(Boolean).join(' · ');
   if (who) info.append(el('span', 'nm', who));
-  if (im.star) info.append(el('span', 'star on', '★'));
+  if (im.star) { info.append(el('span', 'star on', '★')); th.append(el('span', 'thStar', '★')); }
   card.append(th, info);
   card.addEventListener('click', () => {
+    if (listView !== 'day') { drillTo(`.card[data-img="${im.id}"]`); return; }
     listScroll = $('aGrid').scrollTop;
     history.pushState({ v: 'player' }, '');
     openImage(im, 'list');   // aus der Liste geöffnet blättern die Pfeile durch alle Bilder der Liste
@@ -955,10 +1153,17 @@ function clipNeighbor(dir) {
   return i < 0 ? null : list[i + dir] || null;
 }
 
-// Bei Bildern genauso in der Reihenfolge der Liste „Bilder“, auch wenn das Bild über „Video | Bilder“ geöffnet wurde
+// Aus der Liste „Bilder“ geöffnet gehen die Pfeile durch alle Bilder der Liste, mit deren Filter.
+// Über „Video | Bilder“ geöffnet bleiben sie bei den Bildern dieses Videos und laufen im Kreis, nach dem letzten kommt das erste.
 const imagesOf = clipId => listImages.filter(im => im.clipId === clipId).sort((a, b) => a.n - b.n);
 function imageNeighbor(dir) {
   if (!pimg) return null;
+  if (pimg.scope !== 'list' && !isCmp(pimg.rec)) {
+    const own = imagesOf(pimg.clip.id);
+    const i = own.findIndex(im => im.id === pimg.rec.id);
+    if (i < 0 || own.length < 2) return null;
+    return own[(i + dir + own.length) % own.length];
+  }
   const list = listImageItems(pimg.rec.id).map(x => x.im);
   const i = list.findIndex(im => im.id === pimg.rec.id);
   return i < 0 ? null : list[i + dir] || null;
@@ -1043,6 +1248,7 @@ document.addEventListener('click', e => {
 // Zurück-Taste und Zurück-Geste von Android. Wiedergabe führt zur Liste, Liste zu Live.
 // Im Betrieb bleibt sie wirkungslos, damit ein versehentliches Wischen den Betrieb nicht beendet.
 window.addEventListener('popstate', () => {
+  if (helpOpen()) { closeHelp(); return; }   // aus der Hilfe zurück in die Einstellungen
   if (!$('tvCal').classList.contains('hidden')) { closeTvCal(); return; }   // zuerst Bildschirm anpassen, zurück in die Einstellungen
   if (!$('uiDlg').classList.contains('hidden')) {
     // Aus Farbwähler und Löschen zuerst zurück in die Einstellungen, erst dann zu
@@ -1063,6 +1269,7 @@ window.addEventListener('popstate', () => {
   }
   if (mode !== 'analysis') return;
   if (!$('aPlayer').classList.contains('hidden')) showList();
+  else if (viewStack.length) viewBack();
   else leaveAnalysis();
 });
 $('pBack').addEventListener('click', () => history.back());

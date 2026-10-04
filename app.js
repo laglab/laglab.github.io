@@ -1,6 +1,6 @@
 'use strict';
 
-const APP_VERSION = '1.3';   // Version der normalen App, neue Zählung ab v1, entspricht Test-App Stand 94
+const APP_VERSION = '1.4';   // Version der normalen App, neue Zählung ab v1, entspricht Test-App Stand 106
 const STORE_KEY = 'turmdelay.settings.v1';
 const KEY_INTERVAL_MS = 1000;      // Keyframe etwa jede Sekunde
 const LOOKAHEAD_MS = 150;          // so früh wird vor der Anzeige dekodiert
@@ -505,12 +505,13 @@ function showT(now) {
 }
 
 function toggleSlow() {
-  if (slow) { stopSlow(); return; }
+  if (slow) { confirmPress($('slowBtn')); stopSlow(); return; }
   const now = performance.now();
   if (opStart === null || now - opStart < settings.delay * 1000) {
     showToast(tr('Puffer füllt sich noch'), true);
     return;
   }
+  confirmPress($('slowBtn'));
   // Ab dem Bild auf dem Fernseher. Direkt nach einem Sprung gilt die Stelle der normalen Verzögerung.
   slow = { wall: now, ts: lastShownTs || showT(now), end: now };
   renderSlow();
@@ -810,11 +811,11 @@ async function saveNow() {
   }
   const snap = snapshotBuffer();
   if (!snap) { showToast(tr('Nichts zu speichern'), true); return; }
+  confirmPress(saveBtn);   // statt der Meldung „Gespeichert“
   const p = saveClip(snap);
   setRecent(p);
   try {
-    const c = await p;
-    showToast(tr('Gespeichert · {0}', clipLabel(c)));
+    await p;
     // Die 5 Sekunden zählen ab dem fertigen Speichern
     if (recent && recent.p === p) recent.timer = setTimeout(clearRecent, RECENT_MS);
   } catch (e) {
@@ -822,6 +823,18 @@ async function saveNow() {
     clearRecent();
     showToast(tr('Speichern fehlgeschlagen'), true);
   }
+}
+
+// Rückmeldung, wenn ein Knopf lang genug gehalten wurde: ein kurzer Impuls, und der Fortschrittsring leuchtet heller auf.
+// Hat das Gerät keinen Vibrationsmotor, bleibt das Aufleuchten. In der Android-App vibriert Android selbst.
+const BUZZ_MS = 40, FLASH_MS = 350;
+function confirmPress(btn) {
+  try { if (native) native.buzz(BUZZ_MS); else if (navigator.vibrate) navigator.vibrate(BUZZ_MS); } catch (e) {}
+  btn.classList.remove('flash');
+  void btn.getBoundingClientRect();
+  btn.classList.add('flash');
+  clearTimeout(btn.flashTimer);
+  btn.flashTimer = setTimeout(() => btn.classList.remove('flash'), FLASH_MS);
 }
 
 // Nach dem Speichern bleibt der Knopf kurz grau. Ein Tippen in dieser Zeit öffnet das Video.
@@ -1292,9 +1305,9 @@ const TV_RANGE = { w: [40, 100], h: [40, 100], x: [-30, 30], y: [-30, 30] };
 const TV_STEP = 0.5;
 
 // Ausgangswert: das Video über die volle Breite in 16:9, wie in der normalen Anzeige
+// Vorgabe beim ersten Anpassen ist der ganze Bildschirm
 function tvDefaults() {
-  const h = Math.min(100, Math.round(innerWidth * 9 / 16 / innerHeight * 100 / TV_STEP) * TV_STEP);
-  return { w: 100, h, x: 0, y: 0 };
+  return { w: 100, h: 100, x: 0, y: 0 };
 }
 
 function placeBox(el, t) {
@@ -1499,8 +1512,8 @@ async function applyUpdateAtStart() {
   return false;
 }
 
-// Startbildschirm. Er bleibt mindestens so lange ab dem Öffnen stehen, dann blendet er weich aus.
-const SPLASH_MS = 1300;
+// Startbildschirm. Er bleibt ab dem Öffnen immer 3,3 Sekunden stehen, dann blendet er weich aus.
+const SPLASH_MS = 3300;
 function hideSplash() {
   const s = $('splash');
   if (!s || s.classList.contains('out')) return;

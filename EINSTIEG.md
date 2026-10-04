@@ -1,6 +1,6 @@
 # LagLab – Einstieg für einen neuen Chat
 
-Stand 04.10.2026. Normale App **v1.3**, Test-App **Stand 94**. Beide sind inhaltlich gleich.
+Stand 05.10.2026. Normale App **v1.4**, Test-App **Stand 106**. Beide sind inhaltlich gleich.
 
 Diese Datei enthält alles, um ohne Vorwissen weiterzuarbeiten. Reihenfolge zum Lesen:
 1. Diese Datei.
@@ -38,7 +38,7 @@ LagLab ist eine Web-App (PWA) für das Training im Turmspringen. Ein Tablet film
 | Web-App | https://laglab.github.io/ | https://laglab-test.github.io/ |
 | Android-App | https://laglab.github.io/apk/laglab.apk | https://laglab-test.github.io/apk/laglab-test.apk |
 | Android-Paket | `de.laglab.app`, Name „Lag Lab“ | `de.laglab.test`, Name „Lag Lab Test“ |
-| Anzeige der Version | `v1.3` | `Stand 94` |
+| Anzeige der Version | `v1.4` | `Stand 106` |
 
 - Beide Organisationen haben eine eigene Herkunft. Jede App hat dadurch eigenen Speicher, eine eigene Kamera-Erlaubnis und eine eigene Installation.
 - Der Ordner `LagLab` enthält außer der normalen App auch den Android-Teil (`android/`), das Symbol-Skript `icon.py`, das Übernahme-Skript `uebernahme.py`, `UEBERGABE.md`, `PLAN.md` und diese Datei. Der Ordner `grafik/` mit Entwürfen ist nicht im Repository.
@@ -57,13 +57,13 @@ LagLab ist eine Web-App (PWA) für das Training im Turmspringen. Ein Tablet film
 ### Änderung an der Test-App
 
 1. Im Ordner `LagLab-Test` ändern.
-2. `APP_VERSION` in `app.js` um eins erhöhen, etwa von `'94'` auf `'95'`. `VERSION` in `sw.js` passend erhöhen, etwa `PREFIX + 's95'`. Ohne beides bleibt das Tablet auf der alten Version.
-3. In `LagLab/UEBERGABE.md` vor „## Neue Version veröffentlichen“ einen Abschnitt „## Test-App Stand 95“ einfügen und die Kopfzeile oben anpassen.
+2. `APP_VERSION` in `app.js` um eins erhöhen, etwa von `'106'` auf `'107'`. `VERSION` in `sw.js` passend erhöhen, etwa `PREFIX + 's107'`. Ohne beides bleibt das Tablet auf der alten Version.
+3. In `LagLab/UEBERGABE.md` vor „## Neue Version veröffentlichen“ einen Abschnitt „## Test-App Stand 107“ einfügen und die Kopfzeile oben anpassen.
 4. In der Vorschau prüfen (siehe Abschnitt 8).
 5. Android bauen, im Ordner `LagLab/android`:
    `JAVA_HOME="/c/Program Files/Android/Android Studio/jbr" ./gradlew :laglab:assembleLabtestRelease -q`
    Danach `LagLab/android/laglab/build/outputs/apk/labtest/release/laglab-labtest-release.apk` nach `LagLab-Test/apk/laglab-test.apk` kopieren.
-6. In `LagLab-Test` committen und mit `git tag stand-95` markieren. Die geänderte Übergabe in `LagLab` ebenfalls committen.
+6. In `LagLab-Test` committen und mit `git tag stand-107` markieren. Die geänderte Übergabe in `LagLab` ebenfalls committen.
 7. Dem Nutzer die drei Schritte nennen:
    1. In GitHub Desktop „Push origin“ klicken, bei beiden Projekten, die sich geändert haben.
    2. Etwa eine Minute warten, dann die Web-App zweimal neu öffnen, bis unten die neue Nummer steht.
@@ -71,15 +71,15 @@ LagLab ist eine Web-App (PWA) für das Training im Turmspringen. Ein Tablet film
 
 ### Übernahme in die normale App
 
-1. Im Ordner `LagLab`: `python uebernahme.py <Version> <Service-Worker-Zähler>`, etwa `python uebernahme.py 1.4 r21`. Das Skript kopiert die Web-Dateien aus `../LagLab-Test` und setzt Version, Speicherorte, Titel ohne „Test“ und Service Worker der normalen App. Die aktuelle Zählung ist v1.3 mit `r20`.
+1. Im Ordner `LagLab`: `python uebernahme.py <Version> <Service-Worker-Zähler>`, etwa `python uebernahme.py 1.5 r22`. Das Skript kopiert die Web-Dateien aus `../LagLab-Test` und setzt Version, Speicherorte, Titel ohne „Test“ und Service Worker der normalen App. Die aktuelle Zählung ist v1.4 mit `r21`.
 2. Hat sich das Symbol geändert, `icon.py` laufen lassen (siehe unten).
 3. Im Browser unter `LagLab` prüfen, dass die App ohne Fehler startet und unten die neue Version zeigt.
 4. Android bauen mit `:laglab:assembleNormalRelease` und `laglab-normal-release.apk` nach `LagLab/apk/laglab.apk` kopieren. Mit `aapt2 dump badging` lassen sich Name und Version prüfen (`C:\Users\Hilde\AppData\Local\Android\Sdk\build-tools\37.0.0\aapt2.exe`).
-5. Übergabe ergänzen, committen, `git tag v1.4`.
+5. Übergabe ergänzen, committen, `git tag v1.5`.
 
 ### Versionsnummern in Android
 
-`android/laglab/build.gradle` liest `APP_VERSION` aus den beiden `app.js`. Test-App: versionCode = Stand, etwa 94. Normale App: versionCode = 1000 + Hauptnummer × 100 + Unternummer, also v1.3 = 1103. Der Zuschlag von 1000 kam beim Neubeginn der Zählung bei v1 nach v3.7 (307), damit Android neue Versionen immer über alten installiert.
+`android/laglab/build.gradle` liest `APP_VERSION` aus den beiden `app.js`. Test-App: versionCode = Stand, etwa 106. Normale App: versionCode = 1000 + Hauptnummer × 100 + Unternummer, also v1.4 = 1104. Der Zuschlag von 1000 kam beim Neubeginn der Zählung bei v1 nach v3.7 (307), damit Android neue Versionen immer über alten installiert.
 
 Der Bau kopiert vor jedem Lauf nur die Web-Dateien (`index.html`, `*.js`, `*.css`, `manifest.webmanifest`, `icon-*.png`) nach `android/laglab/build/web/<Variante>`. Die normale App kommt aus `LagLab`, die Test-App aus `../LagLab-Test`. Beide Ordner müssen deshalb nebeneinander liegen.
 
@@ -96,16 +96,17 @@ Die Hintergrundfarbe der Android-Symbole und des Startbilds steht in `android/la
 
 ## 6. Aufbau der Web-App
 
-Reines HTML, CSS und JavaScript ohne Build-Werkzeuge. `index.html` lädt die Skripte in dieser Reihenfolge, alle teilen sich einen globalen Bereich: `i18n.js`, `native.js`, `app.js`, `analysis.js`, `draw.js`, `compare.js`. `$` ist `document.getElementById`. Die Klasse `.hidden` blendet mit `!important` aus.
+Reines HTML, CSS und JavaScript ohne Build-Werkzeuge. `index.html` lädt die Skripte in dieser Reihenfolge, alle teilen sich einen globalen Bereich: `i18n.js`, `native.js`, `app.js`, `analysis.js`, `draw.js`, `compare.js`, `help.js`. `$` ist `document.getElementById`. Die Klasse `.hidden` blendet mit `!important` aus.
 
 | Datei | Inhalt |
 |---|---|
 | `i18n.js` | Übersetzungen. `TR_ROWS` mit Spalten de, en, es, pt, fr, it. `tr(key, ...)` übersetzt, `translatePage()` übersetzt die Seite, `data-notr` schließt Nutzertexte aus. Wählbar sind vorerst nur Deutsch und Englisch (`LANGS_ON`). |
-| `native.js` | Brücke zur Android-Hülle. Ist `window.laglab` da, gilt `NATIVE`. USB-Kamera als normale Videospur, Speichern in den Download-Ordner. Im Browser ohne Wirkung. |
+| `native.js` | Brücke zur Android-Hülle. Ist `window.laglab` da, gilt `NATIVE`. USB-Kamera als normale Videospur, Speichern in den Download-Ordner, Vibration. Im Browser ohne Wirkung. |
 | `app.js` | Einstellungen, Kamera, Betrieb mit Verzögerung, Einstellungsfenster, Größe, Farbe, Sprache, Bildschirm anpassen, Zeitlupe im Betrieb, Start und Updates. |
 | `analysis.js` | Analyse: Übersicht mit Filtern, Player für Videos und Bilder, Speichern, Löschen, Sterne, Fristen, Schneiden, Bildfolge. |
 | `draw.js` | Zeichenwerkzeuge, Zoom mit zwei Fingern, Raster. |
 | `compare.js` | Vergleich von 2 bis 4 Videos. |
+| `help.js` | Hilfe über das „i“ in den Einstellungen. Knapper Text je Kapitel, Symbole aus den echten Knöpfen, keine Bilder, vorerst nur Deutsch. |
 | `style.css` | Gestaltung. Drei Farbmodi (dunkel, mittel, hell, Vorgabe mittel), Akzentfarbe, drei Größen der Bedienung über `--z`. |
 | `sw.js` | Service Worker. Speichert alle Dateien mit `cache: 'reload'`. Eine neue Version lädt im Hintergrund und gilt ab dem nächsten Start. |
 
@@ -121,7 +122,7 @@ Reines HTML, CSS und JavaScript ohne Build-Werkzeuge. `index.html` lädt die Skr
 
 ## 7. Funktionsumfang heute
 
-**Startbild.** Symbol, darunter „LAG LAB“ mit orangem „LAB“, darunter „BEWEGUNGSANALYSE“. In der Test-App steht „TEST“ in weißer Schrift neben dem Namen.
+**Startbild.** Symbol, darunter „LAG LAB“ mit orangem „LAB“, darunter „BEWEGUNGSANALYSE“. In der Test-App steht „TEST“ in weißer Schrift neben dem Namen. Es steht immer 3,3 s.
 
 **Kopfzeile.** Links Symbol, „LAG LAB“ und darunter klein der Untertitel. In der Mitte „Live | Analyse“, die geöffnete Seite in der Akzentfarbe. Rechts Versionsnummer und Zahnrad.
 
@@ -131,40 +132,42 @@ Reines HTML, CSS und JavaScript ohne Build-Werkzeuge. `index.html` lädt die Skr
 - „04 Belichtung“ und „05 Fokus“. Fokus erscheint nur, wenn die Kamera einen einstellbaren Fokus meldet. Laptops melden das meist nicht.
 - Darunter „Start“.
 
-**Einstellungen (Zahnrad).**
+**Einstellungen (Zahnrad).** Alle Knöpfe so hoch wie „Videos | Bilder“ in der Analyse. Oben rechts ein rundes „i“ für die Hilfe.
 - 01 Farbe und 02 Sprache nebeneinander.
 - 03 Modus.
 - 04 Größe mit klein, mittel und groß. Vorgabe ist mittel.
-- 05 Bildschirm und 06 Zeitlupe nebeneinander. „Anpassen …“ öffnet im selben Fenster die Regler für Breite, Höhe, Links/rechts und Oben/unten. Die App selbst schrumpft live in den Rahmen und zeigt einen Rand in der Akzentfarbe. Das Fenster liegt dabei außerhalb von `#app`, damit es stehen bleibt. Ein Tippen neben das Fenster verwirft die Änderung, das ist gewollt.
+- 05 Bildschirm und 06 Zeitlupe nebeneinander. „Anpassen …“ öffnet im selben Fenster die Regler für Breite, Höhe, Links/rechts und Oben/unten. Vorgabe ist 100 % Breite und Höhe. Die App selbst schrumpft live in den Rahmen und zeigt einen Rand in der Akzentfarbe. Das Fenster liegt dabei außerhalb von `#app`, damit es stehen bleibt. Ein Tippen neben das Fenster verwirft die Änderung, das ist gewollt.
 - 07 Videos mit „Videos ohne Stern löschen nach N Tagen“. Eine Verkürzung löscht nie ohne Rückfrage.
 
-**Betrieb.** Das verzögerte Bild über die volle Fläche, oben rechts die Sekunden, darunter bei Zeitlupe ein Uhrsymbol. Unten rechts der Speicherknopf, ein Ring mit Punkt, 1 Sekunde halten speichert die letzten Sekunden. Darüber der Zeitlupenknopf mit Uhrzeigern, ebenfalls zum Halten. Alle Knöpfe und Zahlen haben einen dunklen Rand, damit sie auf hellem Bild sichtbar bleiben. 1 Sekunde Drücken an einer freien Stelle führt zurück in die Einstellungen.
+**Betrieb.** Das verzögerte Bild über die volle Fläche, oben rechts die Sekunden, darunter bei Zeitlupe ein Uhrsymbol. Unten rechts der Speicherknopf, ein Ring mit Punkt, 1 Sekunde halten speichert den Puffer. Darüber der Zeitlupenknopf mit Uhrzeigern, ebenfalls zum Halten. Ist lang genug gehalten, vibriert das Gerät kurz und der Fortschrittsring leuchtet heller auf. Eine Meldung „Gespeichert“ gibt es nicht mehr. Alle Knöpfe und Zahlen haben einen dunklen Rand, damit sie auf hellem Bild sichtbar bleiben. 1 Sekunde Drücken an einer freien Stelle führt zurück in die Einstellungen.
 
 **Analyse, Übersicht.**
-- Oben „Videos | Bilder“.
-- Filter Stern, Name und Stichwort. Unter „Bilder“ zusätzlich „Vergleiche“ direkt hinter dem Stern, ausgegraut ohne Vergleichsbild.
-- Rechts neben „Stichwort“ ein kleines × zum Zurücksetzen der Filter, ausgegraut ohne gewählten Filter.
-- Unter „Videos“ ganz rechts „Vergleichen“ für die Auswahl von 2 bis 4 Videos.
-- Karten tragen Namen wie `v8`, Bilder `v8.1`, Vergleichsbilder `vgl3.1`.
+- Links „Videos | Bilder“, rechts „Vergleichen“ für die Auswahl von 2 bis 4 Videos. Unter „Bilder“ bleibt der Platz von „Vergleichen“ leer.
+- Dazwischen mittig eine Gruppe: Ansicht „Tage“, Stern, Name, Stichwort, unter „Bilder“ „vs“ für Vergleichsbilder, dann × zum Zurücksetzen. „Tage“ und „Vergleichen“ im Grau der nicht gewählten Reiter.
+- Name und Stichwort öffnen eine eigene graue Liste statt der weißen Liste von Android.
+- Ansicht: jedes Tippen schaltet Tage, Wochen, Monate, Jahre. Überschriften wie „Heute“, „Montag, 05.10.“, „Diese Woche“, „KW 39 · 21.–27.09.“, „Dieser Monat“, „Dieses Jahr“, rechts die Anzahl. Die Kacheln werden kleiner, unter Jahre eine Kachel je Monat. Ein Tippen führt eine Stufe tiefer zu diesem Eintrag, erst unter Tage öffnet sich das Video. Die Zurück-Geste führt eine Stufe hinauf. Beim Öffnen immer Tage.
+- Karten tragen Namen wie `8`, Bilder `8.1`, Vergleichsbilder `vs3.1`. Gezählt wird pro Tag.
 
 **Player.**
 - Kopfzeile von links: „‹ Übersicht“, „Video | Bilder“, mittig der Titel. Rechts Stern, Name, Stichwort, Herunterladen und Löschen.
-- Oben links im Bild die Pfeile ‹ ›. Sie folgen der Reihenfolge der Übersicht, › geht zur nächsten Karte rechts davon. Die Bildfläche lässt Berührungen auf den Pfeilen durch (`draw.js`, `pointerdown`).
+- Oben links im Bild die Pfeile ‹ ›. Sie folgen der Reihenfolge der Übersicht, › geht zur nächsten Karte rechts davon. Bilder, die über „Video | Bilder“ geöffnet wurden, laufen im Kreis innerhalb ihres Videos. Die Bildfläche lässt Berührungen auf den Pfeilen durch (`draw.js`, `pointerdown`).
 - Unten: Bild zurück, Abspielen, Bild vor, Zeitregler, Zeit, Wiederholen (∞) und Geschwindigkeit (1×, ½, ¼, ⅛).
 
 **Werkzeuge.**
-- 1:1, Stift, Linie, Bogen, Winkel, Lot, Waage, Farbe, Schneiden, Raster, Rückgängig, Leeren, Speichern.
+- 1:1, Stift, Linie, Bogen, Winkel, Kreis, Lot, Waage, Raster, Farbe, Schneiden, Rückgängig, Leeren, Speichern.
+- **Kreis:** Mitte setzen und nach außen ziehen. Der Griff in der Mitte verschiebt, der Griff am Rand ändert die Größe.
+- **Farbe:** Gelb, Rot, Grün, Türkis, Weiß.
 - Zoom und Verschieben gehen mit zwei Fingern in jedem Werkzeug. Ohne gewähltes Werkzeug verschiebt ein Finger.
 - **Bogen:** Erst eine Linie ziehen, dann erscheinen zwei Griffe bei einem und zwei Dritteln. Die Kurve läuft durch alle vier Punkte und bildet etwa eine Flugbahn nach. Alte Bögen mit drei Punkten werden als Kreisbogen gezeichnet.
 - **Lot und Waage** sind senkrechte und waagerechte gestrichelte Linien über das ganze Bild, im Vergleich über das eigene Feld.
 - **Raster** schaltet dezente Linien mit zwölf quadratischen Feldern über die Breite ein und aus. Es bleibt gespeichert eingeschaltet und landet nicht in gespeicherten Bildern.
 - **Bildfolge** ist ausgeblendet, ihr Code bleibt. Zum Wiedereinschalten in `style.css` die Regel `#dStrobe { display: none; }` entfernen.
-- In mehreren Spalten stehen Lot und Waage in einer Reihe, gesteuert über CSS `order`.
+- In mehreren Spalten stehen Lot und Waage in einer Reihe, Raster und Farbe ebenfalls. Lot und Raster beginnen je eine neue Reihe (`grid-column-start: 1`).
 
 **Vergleich.**
 - Bis zu 4 Videos in einem gemeinsamen Bild, 2 untereinander, 3 oder 4 im Raster.
 - Jedes Video hat unter dem Bild einen eigenen Regler zum Ausrichten. Daneben steht unten in der Werkzeugleiste „Start“. Er setzt den gemeinsamen Anfang, blendet die Regler aus und vergrößert die Videos. Nochmals tippen holt die Regler zurück.
-- Gespeicherte Vergleichsbilder heißen `vgl{nr}.{n}`.
+- Gespeicherte Vergleichsbilder heißen `vs{nr}.{n}`.
 
 ## 8. Testen in der Vorschau
 

@@ -194,5 +194,8 @@ const native = (() => {
   };
   send({ t: 'hello' });
 
-  return { usbStream, save };
+  // Kurzer Impuls des Vibrationsmotors, falls das Gerät einen hat
+  const buzz = ms => send({ t: 'buzz', ms });
+
+  return { usbStream, save, buzz };
 })();

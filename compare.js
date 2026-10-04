@@ -31,7 +31,7 @@ function toggleCmpSelect(id) {
 function renderCmpSelect() {
   const on = !!cmpSelect;
   const images = listFilter.kind === 'images';
-  $('fCmp').classList.toggle('hidden', images);
+  $('fCmp').classList.toggle('invis', images);   // unsichtbar, aber mit Platz, damit die Filter nicht springen
   $('fCmp').classList.toggle('on', on);
   $('fCmpGo').classList.toggle('hidden', !on);
   const n = on ? cmpSelect.length : 0;
@@ -361,7 +361,7 @@ function buildAlign() {
   box.classList.toggle('two', cmp.tiles.length > 2);
   for (const t of cmp.tiles) {
     const row = el('div', 'caRow');
-    row.append(el('b', '', `${t.no} · ${clipLabel(t.meta)}`));
+    row.append(el('b', '', clipLabel(t.meta)));   // dieselbe Nummer wie oben links im Feld
     const minus = el('button', 'step sm', '‹');
     minus.setAttribute('aria-label', tr('Ein Bild zurück'));
     const range = document.createElement('input');
@@ -427,7 +427,7 @@ const cmpSig = () => (cmp ? [Math.round(cmp.m), ...cmp.tiles.map(t => t.pos)] : 
 // ---------- Bilder aus dem Vergleich ----------
 
 // Neues Vergleichsbild. Der erste Speichervorgang gibt dem Vergleich seine Nummer des Tages,
-// seine Bilder heißen dann vgl1.1, vgl1.2 und so fort.
+// seine Bilder heißen dann vs1.1, vs1.2 und so fort.
 function newCmpImage(W, H, shapesNow) {
   const now = new Date();
   const day = dayKey(now);

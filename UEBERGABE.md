@@ -1,6 +1,6 @@
 # Übergabe LagLab
 
-Stand 04.10.2026. Seit diesem Tag liegen die beiden Apps in zwei getrennten Projekten mit eigener Herkunft, siehe „Aufteilung in zwei Projekte“. Normale App v1.3 im Projekt `LagLab` (`laglab.github.io`), gleich mit Test-App Stand 94 bis auf Name, Schild „TEST“, Speicherorte und Versionsnummer. Test-App Stand 106 im Projekt `LagLab-Test` (`laglab-test.github.io`). Beide gibt es auch als Android-App. Die Geschichte bis Stand 94 und v1.3 liegt im alten Projekt `tiefenrausch4711-stack/turm-delay` (Ordner `DelayAnwendung`), das nur noch auf die neuen Adressen verweist.
+Stand 04.10.2026. Seit diesem Tag liegen die beiden Apps in zwei getrennten Projekten mit eigener Herkunft, siehe „Aufteilung in zwei Projekte“. Normale App v1.4 im Projekt `LagLab` (`laglab.github.io`), gleich mit Test-App Stand 106 bis auf Name, Schild „TEST“, Speicherorte und Versionsnummer. Test-App Stand 106 im Projekt `LagLab-Test` (`laglab-test.github.io`). Beide gibt es auch als Android-App. Die Geschichte bis Stand 94 und v1.3 liegt im alten Projekt `tiefenrausch4711-stack/turm-delay` (Ordner `DelayAnwendung`), das nur noch auf die neuen Adressen verweist.
 
 Für einen neuen Chat zuerst `EINSTIEG.md` lesen, sie fasst den aktuellen Stand vollständig zusammen. Diese Datei ist das ausführliche Nachschlagewerk zu allen Ständen. Lies zuerst diese Datei und danach `PLAN.md`. `PLAN.md` enthält die vollständige, abgestimmte Planung, die Testergebnisse des Tablets und die Regeln für die Kommunikation mit dem Nutzer.
 
@@ -753,6 +753,11 @@ Behebt Punkte aus der Prüfung von Stand 86 und 87.
 
 - Hilfe neu und so kurz wie möglich, wie ein Spickzettel. Neun Kapitel mit Verzeichnis bleiben. Jede Zeile hat links Symbol oder Namen des Knopfs und rechts einen kurzen, vollständigen Satz. Nur Symbole aus der App, keine Emojis, keine Bilder. Hinweise zu Rückmeldungen wie Vibration oder Aufleuchten wollte der Nutzer ausdrücklich nicht. Beispiel aus Betrieb: „1 s halten speichert den Puffer. Danach innerhalb 5 s antippen öffnet das Video.“
 - Die Bildschirmfotos (`hilfe/`) und das Skript `LagLab/hilfe_fotos.mjs` sind entfernt, ebenso ihre Einträge in `sw.js`, `build.gradle` und `uebernahme.py`.
+
+## Normale App v1.4
+
+- Übernahme von Test-App Stand 106 mit `python uebernahme.py 1.4 r21`. Enthält alles aus den Ständen 95 bis 106: Kreis, Farbe Grün, Namen ohne „v“ und Vergleiche mit „vs“, Bilder eines Videos im Kreis blättern, Ansicht Tage, Wochen, Monate, Jahre, eigene Auswahllisten, Hilfe, Vibration und Aufleuchten beim Halten, gleiche Knopfhöhen, Startbild 3,3 s, Anpassen mit 100 %.
+- Android-App `de.laglab.app` v1.4, versionCode 1104, neu mit der Erlaubnis `VIBRATE`.
 
 ## Neue Version veröffentlichen
 
