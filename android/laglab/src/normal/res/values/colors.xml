@@ -1,0 +1,5 @@
+<resources>
+    <color name="splash">#2c333b</color>
+    <!-- Hintergrund des Symbols auf dem Startbildschirm von Android, dunkles Schiefergrau, Kamera helles Salbei, Zeiger Bernstein wie in der Test-App -->
+    <color name="icon_bg">#2c333b</color>
+</resources>

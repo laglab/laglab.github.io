@@ -1,0 +1,5 @@
+<resources>
+    <color name="splash">#2c333b</color>
+    <!-- Hintergrund des Symbols auf dem Startbildschirm von Android, dunkles Schiefergrau, Variante H4.5 mit Kamera in hellem Salbei und Zeigern in Bernstein -->
+    <color name="icon_bg">#2c333b</color>
+</resources>
