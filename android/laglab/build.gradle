@@ -17,7 +17,7 @@ def webCode(String flavor) {
 }
 // Nur die Dateien der Web-App kommen in die APK, nicht Android-Teil, APKs, Grafiken oder Notizen.
 // Sie werden vor jedem Bau in build/web/<Variante> kopiert.
-ext.WEB_FILES = ['index.html', '*.js', '*.css', 'manifest.webmanifest', 'icon-*.png']
+ext.WEB_FILES = ['index.html', '*.js', '*.css', 'manifest.webmanifest', 'icon-*.png', 'hilfe/*.jpg']
 WEB.each { flavor, dir ->
     def copy = tasks.register("copyWeb${flavor.capitalize()}", Sync) {
         from(dir) { include WEB_FILES }

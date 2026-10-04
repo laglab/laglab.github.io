@@ -12,7 +12,8 @@ import os, re, shutil, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TEST = os.path.join(HERE, '..', 'LagLab-Test')
-FILES = ['analysis.js', 'app.js', 'compare.js', 'draw.js', 'i18n.js', 'native.js', 'style.css', 'index.html', 'sw.js']
+FILES = ['analysis.js', 'app.js', 'compare.js', 'draw.js', 'help.js', 'i18n.js', 'native.js', 'style.css', 'index.html', 'sw.js']
+DIRS = ['hilfe']   # Bildschirmfotos der Hilfe
 
 
 def edit(name, pairs):
@@ -28,6 +29,8 @@ def main(version, sw):
     stand = re.search(r"APP_VERSION = '(\d+)'", open(os.path.join(TEST, 'app.js'), encoding='utf-8').read()).group(1)
     for f in FILES:
         shutil.copyfile(os.path.join(TEST, f), os.path.join(HERE, f))
+    for d in DIRS:
+        shutil.copytree(os.path.join(TEST, d), os.path.join(HERE, d), dirs_exist_ok=True)
     edit('app.js', [
         (r"const APP_VERSION = '\d+';.*",
          f"const APP_VERSION = '{version}';   // Version der normalen App, neue Zählung ab v1, entspricht Test-App Stand {stand}", 1),
