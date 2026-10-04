@@ -1,6 +1,6 @@
 # Übergabe LagLab
 
-Stand 04.10.2026. Seit diesem Tag liegen die beiden Apps in zwei getrennten Projekten mit eigener Herkunft, siehe „Aufteilung in zwei Projekte“. Normale App v1.3 im Projekt `LagLab` (`laglab.github.io`), gleich mit Test-App Stand 94 bis auf Name, Schild „TEST“, Speicherorte und Versionsnummer. Test-App Stand 97 im Projekt `LagLab-Test` (`laglab-test.github.io`). Beide gibt es auch als Android-App. Die Geschichte bis Stand 94 und v1.3 liegt im alten Projekt `tiefenrausch4711-stack/turm-delay` (Ordner `DelayAnwendung`), das nur noch auf die neuen Adressen verweist.
+Stand 04.10.2026. Seit diesem Tag liegen die beiden Apps in zwei getrennten Projekten mit eigener Herkunft, siehe „Aufteilung in zwei Projekte“. Normale App v1.3 im Projekt `LagLab` (`laglab.github.io`), gleich mit Test-App Stand 94 bis auf Name, Schild „TEST“, Speicherorte und Versionsnummer. Test-App Stand 98 im Projekt `LagLab-Test` (`laglab-test.github.io`). Beide gibt es auch als Android-App. Die Geschichte bis Stand 94 und v1.3 liegt im alten Projekt `tiefenrausch4711-stack/turm-delay` (Ordner `DelayAnwendung`), das nur noch auf die neuen Adressen verweist.
 
 Für einen neuen Chat zuerst `EINSTIEG.md` lesen, sie fasst den aktuellen Stand vollständig zusammen. Diese Datei ist das ausführliche Nachschlagewerk zu allen Ständen. Lies zuerst diese Datei und danach `PLAN.md`. `PLAN.md` enthält die vollständige, abgestimmte Planung, die Testergebnisse des Tablets und die Regeln für die Kommunikation mit dem Nutzer.
 
@@ -697,6 +697,15 @@ Behebt Punkte aus der Prüfung von Stand 86 und 87.
 - Neue Namen. Videos heißen nur noch mit Zahl, etwa `4`, ihre Bilder `4.5`. Vergleichsbilder heißen `vs3.1` statt `vgl3.1`. „vs“ versteht man ohne Übersetzung in allen Sprachen. Buchstaben vor Videos und Bildern wollte der Nutzer ausdrücklich nicht mehr. Das gilt für Karten, Titel, Meldungen und Dateinamen, etwa `2026-10-02_3_Teo_Kopfsprung.mp4`. Gespeichert sind nur die Nummern (`nr`, `n`), alte Daten zeigen die neuen Namen deshalb von selbst. `clipLabel` und `imageLabel` in `analysis.js`.
 - Die Nummern zählen weiter pro Tag. Ein Vergleich gehört zu dem Tag, an dem sein erstes Bild gespeichert wurde, auch wenn er Videos verschiedener Tage zeigt. Deshalb wurde ein Name aus den beteiligten Videos (`2+5`) verworfen.
 - Im Vergleich steht über jedem Regler nur noch die Nummer des Videos, wie oben links im Feld. Vorher stand dort die Feldnummer davor (`1 · v4`). Ohne „v“ hätte sich `1 · 4` wie zwei Nummern gelesen.
+
+## Test-App Stand 98
+
+- Der Startbildschirm steht ab dem Öffnen immer 3,3 Sekunden (`SPLASH_MS = 3300` in `app.js`). Nach der Übernahme einer neuen Version kann der erste Start länger dauern, weil die Seite neu lädt.
+- Einstellungen: alle Knöpfe 46 px hoch (mal `--z`), so hoch wie „Videos | Bilder“ in der Analyse. Bei Umschaltungen wie „03 Modus“ hat der ganze Rahmen diese Höhe. Sprache und Zeitlupe wachsen dafür nicht mehr in die Höhe der Farbkreise (`flex: 0 0 auto`). Die Regeln stehen am Ende von `style.css` unter `#uiMain`, damit sie die Regeln für Größen und niedrige Rahmen überstimmen. Die Farbkreise sind unverändert.
+- Player: „‹ Übersicht“ und „Video | Bilder“ links in der Kopfzeile sind jetzt 44 px hoch wie die Knöpfe und Felder rechts.
+- Neue Zeichenfarbe Grün `#3ee05a`. Reihenfolge beim Tippen auf „Farbe“: Gelb, Rot, Grün, Türkis, Weiß.
+- „Anpassen“ beginnt beim ersten Öffnen und nach „Zurücksetzen“ mit 100 % Breite und 100 % Höhe. Vorher war die Höhe auf 16:9 gerechnet, auf dem Tablet 90 %. Schon gespeicherte Werte bleiben.
+- Filter unter „Bilder“: aus „Vergleiche“ wird ein kleiner runder Knopf „vs“ zwischen Stichwort und ×.
 
 ## Neue Version veröffentlichen
 
