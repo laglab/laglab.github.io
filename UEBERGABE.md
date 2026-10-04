@@ -1,6 +1,6 @@
 # Übergabe LagLab
 
-Stand 04.10.2026. Seit diesem Tag liegen die beiden Apps in zwei getrennten Projekten mit eigener Herkunft, siehe „Aufteilung in zwei Projekte“. Normale App v1.3 im Projekt `LagLab` (`laglab.github.io`), gleich mit Test-App Stand 94 bis auf Name, Schild „TEST“, Speicherorte und Versionsnummer. Test-App Stand 102 im Projekt `LagLab-Test` (`laglab-test.github.io`). Beide gibt es auch als Android-App. Die Geschichte bis Stand 94 und v1.3 liegt im alten Projekt `tiefenrausch4711-stack/turm-delay` (Ordner `DelayAnwendung`), das nur noch auf die neuen Adressen verweist.
+Stand 04.10.2026. Seit diesem Tag liegen die beiden Apps in zwei getrennten Projekten mit eigener Herkunft, siehe „Aufteilung in zwei Projekte“. Normale App v1.3 im Projekt `LagLab` (`laglab.github.io`), gleich mit Test-App Stand 94 bis auf Name, Schild „TEST“, Speicherorte und Versionsnummer. Test-App Stand 103 im Projekt `LagLab-Test` (`laglab-test.github.io`). Beide gibt es auch als Android-App. Die Geschichte bis Stand 94 und v1.3 liegt im alten Projekt `tiefenrausch4711-stack/turm-delay` (Ordner `DelayAnwendung`), das nur noch auf die neuen Adressen verweist.
 
 Für einen neuen Chat zuerst `EINSTIEG.md` lesen, sie fasst den aktuellen Stand vollständig zusammen. Diese Datei ist das ausführliche Nachschlagewerk zu allen Ständen. Lies zuerst diese Datei und danach `PLAN.md`. `PLAN.md` enthält die vollständige, abgestimmte Planung, die Testergebnisse des Tablets und die Regeln für die Kommunikation mit dem Nutzer.
 
@@ -734,6 +734,10 @@ Behebt Punkte aus der Prüfung von Stand 86 und 87.
 - Ein Tippen auf eine Kachel führt eine Stufe tiefer zu genau diesem Eintrag (`drillTo`): Jahre zu Monate, Monate zu Wochen, Wochen zu Tage. Erst unter Tage öffnet sich das Video. Jeder Sprung legt einen Verlaufseintrag an, die Zurück-Geste führt eine Stufe hinauf an dieselbe Scrollstelle (`viewStack`, `viewBack`). Bei aktiver Auswahl für „Vergleichen“ wählt ein Tippen aus, außer bei den Monatskacheln unter Jahre.
 - Filterzeile: Ansicht links, Stern, Name, Stichwort, vs und × in `.fMid` mittig bis „Vergleichen“. Unter „Bilder“ bleibt „Vergleichen“ unsichtbar mit Platz (`.invis`), damit die Filter nicht springen.
 - Hilfe angepasst, das Foto `hilfe/analyse.jpg` neu aufgenommen.
+
+## Test-App Stand 103
+
+- Das Aufleuchten nach dem Halten von Speichern und Zeitlupe war dem Nutzer zu kräftig. Jetzt leuchtet nur noch der dünne Fortschrittsring kurz in hellerer Akzentfarbe auf, die Fläche bleibt wie beim Halten. Vibration unverändert.
 
 ## Neue Version veröffentlichen
 
