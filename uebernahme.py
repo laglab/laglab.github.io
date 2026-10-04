@@ -13,7 +13,7 @@ import os, re, shutil, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 TEST = os.path.join(HERE, '..', 'LagLab-Test')
 FILES = ['analysis.js', 'app.js', 'compare.js', 'draw.js', 'help.js', 'i18n.js', 'native.js', 'style.css', 'index.html', 'sw.js']
-DIRS = ['hilfe']   # Bildschirmfotos der Hilfe
+DIRS = []   # Unterordner der Web-App, derzeit keine
 
 
 def edit(name, pairs):
