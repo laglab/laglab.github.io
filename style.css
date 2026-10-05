@@ -965,6 +965,10 @@ html.tvfit #out { object-fit: fill; }
 #helpBody li { margin-bottom: 4px; }
 #helpBody dl { margin: 4px 0 12px; display: grid; grid-template-columns: minmax(140px, max-content) minmax(0, 1fr); gap: 8px 18px; }
 #helpBody dt { font-weight: 650; display: flex; align-items: flex-start; gap: 6px; }
+/* Sterne in normaler Schrift, fett wirkt der leere Stern gefüllt. Unter Sterne in den Farben der Kacheln. */
+#helpBody .hStar { font-weight: 400; }
+#h-star .hStar { color: var(--dim); }
+#h-star .hStar.on { color: var(--warn); }
 #helpBody dd { margin: 0; color: var(--fg); }
 /* Symbole aus der App neben dem Begriff */
 #helpBody dt i { flex: 0 0 auto; display: inline-grid; place-items: center; width: 26px; height: 24px; color: var(--mut); }
@@ -1029,7 +1033,3 @@ html.tvfit #out { object-fit: fill; }
 #aGrid[data-view="month"] .card .info, #aGrid[data-view="month"] .card .dur, #aGrid[data-view="month"] .card .imgs { display: none; }
 #aGrid[data-view="month"] .card .thStar { display: block; }
 #aGrid[data-view="month"] .card .selNo { left: 4px; top: 4px; width: 24px; height: 24px; font-size: 14px; }
-/* Jahre: eine Kachel je Monat mit Anzahl */
-#aGrid[data-view="year"] .cards { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
-.mTile .info { padding: 8px 12px; }
-.mTile .info b { font-size: 15px; }

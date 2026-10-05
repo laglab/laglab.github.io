@@ -1,6 +1,6 @@
 # Übergabe LagLab
 
-Stand 04.10.2026. Seit diesem Tag liegen die beiden Apps in zwei getrennten Projekten mit eigener Herkunft, siehe „Aufteilung in zwei Projekte“. Normale App v1.4 im Projekt `LagLab` (`laglab.github.io`), gleich mit Test-App Stand 106 bis auf Name, Schild „TEST“, Speicherorte und Versionsnummer. Test-App Stand 109 im Projekt `LagLab-Test` (`laglab-test.github.io`). Beide gibt es auch als Android-App. Die Geschichte bis Stand 94 und v1.3 liegt im alten Projekt `tiefenrausch4711-stack/turm-delay` (Ordner `DelayAnwendung`), das nur noch auf die neuen Adressen verweist.
+Stand 04.10.2026. Seit diesem Tag liegen die beiden Apps in zwei getrennten Projekten mit eigener Herkunft, siehe „Aufteilung in zwei Projekte“. Normale App v1.5 im Projekt `LagLab` (`laglab.github.io`), gleich mit Test-App Stand 109 bis auf Name, Schild „TEST“, Speicherorte und Versionsnummer. Test-App Stand 109 im Projekt `LagLab-Test` (`laglab-test.github.io`). Beide gibt es auch als Android-App. Die Geschichte bis Stand 94 und v1.3 liegt im alten Projekt `tiefenrausch4711-stack/turm-delay` (Ordner `DelayAnwendung`), das nur noch auf die neuen Adressen verweist.
 
 Für einen neuen Chat zuerst `EINSTIEG.md` lesen, sie fasst den aktuellen Stand vollständig zusammen. Diese Datei ist das ausführliche Nachschlagewerk zu allen Ständen. Lies zuerst diese Datei und danach `PLAN.md`. `PLAN.md` enthält die vollständige, abgestimmte Planung, die Testergebnisse des Tablets und die Regeln für die Kommunikation mit dem Nutzer.
 
@@ -771,6 +771,11 @@ Behebt Punkte aus der Prüfung von Stand 86 und 87.
 ## Test-App Stand 109
 
 - Vergleich immer im Raster aus zwei mal zwei Feldern, auch bei zwei Videos. Bisher standen zwei Videos übereinander und waren dadurch nicht größer. Zwei Videos stehen jetzt oben nebeneinander, freie Felder sind schwarz. Die Regler zum Ausrichten stehen immer in zwei Spalten wie die Felder (`openCompare` und `buildAlign` in `compare.js`).
+
+## Normale App v1.5
+
+- Übernahme von Test-App Stand 109 mit `python uebernahme.py 1.5 r22`. Neu gegenüber v1.4: Hilfetext des Nutzers mit korrigierter Markierung im Verzeichnis, Ansicht ohne Jahre, Vergleich immer im Raster zwei mal zwei.
+- Android-App `de.laglab.app` v1.5, versionCode 1105.
 
 ## Neue Version veröffentlichen
 

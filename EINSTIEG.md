@@ -1,6 +1,6 @@
 # LagLab – Einstieg für einen neuen Chat
 
-Stand 05.10.2026. Normale App **v1.4**, Test-App **Stand 106**. Beide sind inhaltlich gleich.
+Stand 05.10.2026. Normale App **v1.5**, Test-App **Stand 109**. Beide sind inhaltlich gleich.
 
 Diese Datei enthält alles, um ohne Vorwissen weiterzuarbeiten. Reihenfolge zum Lesen:
 1. Diese Datei.
@@ -38,7 +38,7 @@ LagLab ist eine Web-App (PWA) für das Training im Turmspringen. Ein Tablet film
 | Web-App | https://laglab.github.io/ | https://laglab-test.github.io/ |
 | Android-App | https://laglab.github.io/apk/laglab.apk | https://laglab-test.github.io/apk/laglab-test.apk |
 | Android-Paket | `de.laglab.app`, Name „Lag Lab“ | `de.laglab.test`, Name „Lag Lab Test“ |
-| Anzeige der Version | `v1.4` | `Stand 106` |
+| Anzeige der Version | `v1.5` | `Stand 109` |
 
 - Beide Organisationen haben eine eigene Herkunft. Jede App hat dadurch eigenen Speicher, eine eigene Kamera-Erlaubnis und eine eigene Installation.
 - Der Ordner `LagLab` enthält außer der normalen App auch den Android-Teil (`android/`), das Symbol-Skript `icon.py`, das Übernahme-Skript `uebernahme.py`, `UEBERGABE.md`, `PLAN.md` und diese Datei. Der Ordner `grafik/` mit Entwürfen ist nicht im Repository.
@@ -57,13 +57,13 @@ LagLab ist eine Web-App (PWA) für das Training im Turmspringen. Ein Tablet film
 ### Änderung an der Test-App
 
 1. Im Ordner `LagLab-Test` ändern.
-2. `APP_VERSION` in `app.js` um eins erhöhen, etwa von `'106'` auf `'107'`. `VERSION` in `sw.js` passend erhöhen, etwa `PREFIX + 's107'`. Ohne beides bleibt das Tablet auf der alten Version.
-3. In `LagLab/UEBERGABE.md` vor „## Neue Version veröffentlichen“ einen Abschnitt „## Test-App Stand 107“ einfügen und die Kopfzeile oben anpassen.
+2. `APP_VERSION` in `app.js` um eins erhöhen, etwa von `'109'` auf `'110'`. `VERSION` in `sw.js` passend erhöhen, etwa `PREFIX + 's110'`. Ohne beides bleibt das Tablet auf der alten Version.
+3. In `LagLab/UEBERGABE.md` vor „## Neue Version veröffentlichen“ einen Abschnitt „## Test-App Stand 110“ einfügen und die Kopfzeile oben anpassen.
 4. In der Vorschau prüfen (siehe Abschnitt 8).
 5. Android bauen, im Ordner `LagLab/android`:
    `JAVA_HOME="/c/Program Files/Android/Android Studio/jbr" ./gradlew :laglab:assembleLabtestRelease -q`
    Danach `LagLab/android/laglab/build/outputs/apk/labtest/release/laglab-labtest-release.apk` nach `LagLab-Test/apk/laglab-test.apk` kopieren.
-6. In `LagLab-Test` committen und mit `git tag stand-107` markieren. Die geänderte Übergabe in `LagLab` ebenfalls committen.
+6. In `LagLab-Test` committen und mit `git tag stand-110` markieren. Die geänderte Übergabe in `LagLab` ebenfalls committen.
 7. Dem Nutzer die drei Schritte nennen:
    1. In GitHub Desktop „Push origin“ klicken, bei beiden Projekten, die sich geändert haben.
    2. Etwa eine Minute warten, dann die Web-App zweimal neu öffnen, bis unten die neue Nummer steht.
@@ -71,15 +71,15 @@ LagLab ist eine Web-App (PWA) für das Training im Turmspringen. Ein Tablet film
 
 ### Übernahme in die normale App
 
-1. Im Ordner `LagLab`: `python uebernahme.py <Version> <Service-Worker-Zähler>`, etwa `python uebernahme.py 1.5 r22`. Das Skript kopiert die Web-Dateien aus `../LagLab-Test` und setzt Version, Speicherorte, Titel ohne „Test“ und Service Worker der normalen App. Die aktuelle Zählung ist v1.4 mit `r21`.
+1. Im Ordner `LagLab`: `python uebernahme.py <Version> <Service-Worker-Zähler>`, etwa `python uebernahme.py 1.6 r23`. Das Skript kopiert die Web-Dateien aus `../LagLab-Test` und setzt Version, Speicherorte, Titel ohne „Test“ und Service Worker der normalen App. Die aktuelle Zählung ist v1.5 mit `r22`.
 2. Hat sich das Symbol geändert, `icon.py` laufen lassen (siehe unten).
 3. Im Browser unter `LagLab` prüfen, dass die App ohne Fehler startet und unten die neue Version zeigt.
 4. Android bauen mit `:laglab:assembleNormalRelease` und `laglab-normal-release.apk` nach `LagLab/apk/laglab.apk` kopieren. Mit `aapt2 dump badging` lassen sich Name und Version prüfen (`C:\Users\Hilde\AppData\Local\Android\Sdk\build-tools\37.0.0\aapt2.exe`).
-5. Übergabe ergänzen, committen, `git tag v1.5`.
+5. Übergabe ergänzen, committen, `git tag v1.6`.
 
 ### Versionsnummern in Android
 
-`android/laglab/build.gradle` liest `APP_VERSION` aus den beiden `app.js`. Test-App: versionCode = Stand, etwa 106. Normale App: versionCode = 1000 + Hauptnummer × 100 + Unternummer, also v1.4 = 1104. Der Zuschlag von 1000 kam beim Neubeginn der Zählung bei v1 nach v3.7 (307), damit Android neue Versionen immer über alten installiert.
+`android/laglab/build.gradle` liest `APP_VERSION` aus den beiden `app.js`. Test-App: versionCode = Stand, etwa 109. Normale App: versionCode = 1000 + Hauptnummer × 100 + Unternummer, also v1.5 = 1105. Der Zuschlag von 1000 kam beim Neubeginn der Zählung bei v1 nach v3.7 (307), damit Android neue Versionen immer über alten installiert.
 
 Der Bau kopiert vor jedem Lauf nur die Web-Dateien (`index.html`, `*.js`, `*.css`, `manifest.webmanifest`, `icon-*.png`) nach `android/laglab/build/web/<Variante>`. Die normale App kommt aus `LagLab`, die Test-App aus `../LagLab-Test`. Beide Ordner müssen deshalb nebeneinander liegen.
 
@@ -106,7 +106,7 @@ Reines HTML, CSS und JavaScript ohne Build-Werkzeuge. `index.html` lädt die Skr
 | `analysis.js` | Analyse: Übersicht mit Filtern, Player für Videos und Bilder, Speichern, Löschen, Sterne, Fristen, Schneiden, Bildfolge. |
 | `draw.js` | Zeichenwerkzeuge, Zoom mit zwei Fingern, Raster. |
 | `compare.js` | Vergleich von 2 bis 4 Videos. |
-| `help.js` | Hilfe über das „i“ in den Einstellungen. Knapper Text je Kapitel, Symbole aus den echten Knöpfen, keine Bilder, vorerst nur Deutsch. |
+| `help.js` | Hilfe über das „i“ in den Einstellungen. Text vom Nutzer, je Zeile Symbol oder Name und ein kurzer Satz ohne Punkt am Ende. Symbole aus den echten Knöpfen, keine Bilder, vorerst nur Deutsch. |
 | `style.css` | Gestaltung. Drei Farbmodi (dunkel, mittel, hell, Vorgabe mittel), Akzentfarbe, drei Größen der Bedienung über `--z`. |
 | `sw.js` | Service Worker. Speichert alle Dateien mit `cache: 'reload'`. Eine neue Version lädt im Hintergrund und gilt ab dem nächsten Start. |
 
@@ -145,7 +145,7 @@ Reines HTML, CSS und JavaScript ohne Build-Werkzeuge. `index.html` lädt die Skr
 - Links „Videos | Bilder“, rechts „Vergleichen“ für die Auswahl von 2 bis 4 Videos. Unter „Bilder“ bleibt der Platz von „Vergleichen“ leer.
 - Dazwischen mittig eine Gruppe: Ansicht „Tage“, Stern, Name, Stichwort, unter „Bilder“ „vs“ für Vergleichsbilder, dann × zum Zurücksetzen. „Tage“ und „Vergleichen“ im Grau der nicht gewählten Reiter.
 - Name und Stichwort öffnen eine eigene graue Liste statt der weißen Liste von Android.
-- Ansicht: jedes Tippen schaltet Tage, Wochen, Monate, Jahre. Überschriften wie „Heute“, „Montag, 05.10.“, „Diese Woche“, „KW 39 · 21.–27.09.“, „Dieser Monat“, „Dieses Jahr“, rechts die Anzahl. Die Kacheln werden kleiner, unter Jahre eine Kachel je Monat. Ein Tippen führt eine Stufe tiefer zu diesem Eintrag, erst unter Tage öffnet sich das Video. Die Zurück-Geste führt eine Stufe hinauf. Beim Öffnen immer Tage.
+- Ansicht: jedes Tippen schaltet Tage, Wochen, Monate. Jahre wollte der Nutzer nicht. Überschriften wie „Heute“, „Montag, 05.10.“, „Diese Woche“, „KW 39 · 21.–27.09.“, „Dieser Monat“, „August 2026“, rechts die Anzahl. Die Kacheln werden kleiner. Ein Tippen führt eine Stufe tiefer zu diesem Eintrag, erst unter Tage öffnet sich das Video. Die Zurück-Geste führt eine Stufe hinauf. Beim Öffnen immer Tage.
 - Karten tragen Namen wie `8`, Bilder `8.1`, Vergleichsbilder `vs3.1`. Gezählt wird pro Tag.
 
 **Player.**
@@ -165,9 +165,9 @@ Reines HTML, CSS und JavaScript ohne Build-Werkzeuge. `index.html` lädt die Skr
 - In mehreren Spalten stehen Lot und Waage in einer Reihe, Raster und Farbe ebenfalls. Lot und Raster beginnen je eine neue Reihe (`grid-column-start: 1`).
 
 **Vergleich.**
-- Bis zu 4 Videos in einem gemeinsamen Bild, 2 untereinander, 3 oder 4 im Raster.
+- Bis zu 4 Videos in einem gemeinsamen Bild, immer im Raster aus zwei mal zwei Feldern. Zwei Videos stehen oben nebeneinander.
 - Jedes Video hat unter dem Bild einen eigenen Regler zum Ausrichten. Daneben steht unten in der Werkzeugleiste „Start“. Er setzt den gemeinsamen Anfang, blendet die Regler aus und vergrößert die Videos. Nochmals tippen holt die Regler zurück.
-- Gespeicherte Vergleichsbilder heißen `vs{nr}.{n}`.
+- Gespeicherte Vergleichsbilder heißen `vs{nr}.{n}`, Nummer des Vergleichs am Tag und Nummer des Bildes. Der Titel „Vergleich · 1 · 3“ nennt die Videonummern des Tages, ohne Datum, so gewollt.
 
 ## 8. Testen in der Vorschau
 

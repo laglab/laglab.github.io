@@ -1,6 +1,6 @@
 'use strict';
 
-const APP_VERSION = '1.4';   // Version der normalen App, neue Zählung ab v1, entspricht Test-App Stand 106
+const APP_VERSION = '1.5';   // Version der normalen App, neue Zählung ab v1, entspricht Test-App Stand 109
 const STORE_KEY = 'turmdelay.settings.v1';
 const KEY_INTERVAL_MS = 1000;      // Keyframe etwa jede Sekunde
 const LOOKAHEAD_MS = 150;          // so früh wird vor der Anzeige dekodiert

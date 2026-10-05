@@ -1,7 +1,7 @@
 // Bei jeder neuen Version VERSION erhöhen. Die neue Version wird beim nächsten App-Start übernommen.
 // Normale App, laglab.github.io. Nur eigene Speicher werden gelöscht.
 const PREFIX = 'turm-delay-';
-const VERSION = PREFIX + 'r21';   // Zählung seit 01.10.2026, bei jeder Übernahme eins weiter
+const VERSION = PREFIX + 'r22';   // Zählung seit 01.10.2026, bei jeder Übernahme eins weiter
 const FILES = ['./', 'index.html', 'i18n.js', 'native.js', 'app.js', 'analysis.js', 'draw.js', 'compare.js', 'help.js', 'style.css', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png'];
 
 self.addEventListener('install', e => {

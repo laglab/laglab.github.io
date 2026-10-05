@@ -68,8 +68,9 @@ async function openCompare(ids) {
   closePlayer();
   closeRange();
   const n = metas.length;
-  // Zwei Videos übereinander, drei oder vier im Raster aus zwei mal zwei Feldern
-  const cols = n <= 2 ? 1 : 2, rows = 2;
+  // Immer im Raster aus zwei mal zwei Feldern, so sind die Videos bei zwei, drei und vier gleich groß.
+  // Zwei Videos stehen oben nebeneinander.
+  const cols = 2, rows = 2;
   const W = cols * CMP_TW + (cols - 1) * CMP_GAP, H = rows * CMP_TH + (rows - 1) * CMP_GAP;
   const tiles = [];
   for (let k = 0; k < n; k++) {
@@ -107,10 +108,9 @@ async function openCompare(ids) {
   pCanvas.height = H;
   pctx.fillStyle = '#26292d';
   pctx.fillRect(0, 0, W, H);
-  if (n === 3) {   // freies viertes Feld
-    pctx.fillStyle = '#000';
-    pctx.fillRect(CMP_TW + CMP_GAP, CMP_TH + CMP_GAP, CMP_TW, CMP_TH);
-  }
+  // Freie Felder schwarz
+  pctx.fillStyle = '#000';
+  for (let k = n; k < cols * rows; k++) pctx.fillRect((k % cols) * (CMP_TW + CMP_GAP), Math.floor(k / cols) * (CMP_TH + CMP_GAP), CMP_TW, CMP_TH);
   for (const t of tiles) { pctx.fillStyle = '#000'; pctx.fillRect(t.rect.x, t.rect.y, t.rect.w, t.rect.h); }
   resetDrawing();
   drawTiles = tiles.map(t => t.rect);
@@ -358,7 +358,7 @@ const alignDrag = new Set();   // Regler, die gerade gezogen werden
 function buildAlign() {
   const box = $('cmpAlign');
   box.textContent = '';
-  box.classList.toggle('two', cmp.tiles.length > 2);
+  box.classList.add('two');   // Regler in zwei Spalten wie die Felder
   for (const t of cmp.tiles) {
     const row = el('div', 'caRow');
     row.append(el('b', '', clipLabel(t.meta)));   // dieselbe Nummer wie oben links im Feld

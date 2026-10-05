@@ -363,11 +363,11 @@ function renderList(clips) {
   $('aEmpty').textContent = images
     ? tr(all ? 'Keine Bilder für diese Auswahl.' : 'Noch keine Bilder gespeichert.')
     : tr(all ? 'Keine Videos für diese Auswahl.' : 'Noch keine Videos gespeichert.');
-  // Gruppen nach der Ansicht, rechts in der Überschrift die Anzahl. Bei Jahren eine Kachel je Monat.
+  // Gruppen nach der Ansicht, rechts in der Überschrift die Anzahl
   grid.dataset.view = listView;
   const counts = new Map();
   for (const x of items) { const k = groupKeyOf(x.c.day); counts.set(k, (counts.get(k) || 0) + 1); }
-  let key = null, row = null, month = null, monthItems = null;
+  let key = null, row = null;
   for (const x of items) {
     const k = groupKeyOf(x.c.day);
     if (k !== key) {
@@ -375,14 +375,9 @@ function renderList(clips) {
       grid.append(groupHead(k, counts.get(k), images));
       row = el('div', 'cards');
       grid.append(row);
-      month = null;
     }
-    if (listView !== 'year') { row.append(x.im ? imageCard(x.c, x.im) : clipCard(x.c)); continue; }
-    const m = x.c.day.slice(0, 7);
-    if (m !== month) { month = m; monthItems = []; row.append(monthTile(m, monthItems)); }
-    monthItems.push(x);
+    row.append(x.im ? imageCard(x.c, x.im) : clipCard(x.c));
   }
-  for (const t of grid.querySelectorAll('.mTile')) t.fill();
   renderCmpSelect();   // Auswahl für den Vergleich bleibt beim Neuzeichnen sichtbar
 }
 
@@ -454,7 +449,7 @@ function ddItem(sel, o) {
   return b;
 }
 
-// Die Liste öffnet direkt unter dem Knopf, mit Überschriften für Gruppen wie die Jahre bei „Zeit“
+// Die Liste öffnet direkt unter dem Knopf, optgroup erscheint als Überschrift
 function openDd(sel) {
   closeDd();
   ddPop.textContent = '';
@@ -484,11 +479,11 @@ function closeDd() {
 document.addEventListener('pointerdown', e => { if (ddOpen && !e.target.closest('.ddPop, .dd')) closeDd(); }, true);
 for (const id of ['fName', 'fProp']) makeDd($(id));
 
-// ---------- Ansichten Tage, Wochen, Monate, Jahre ----------
+// ---------- Ansichten Tage, Wochen, Monate ----------
 // Die Ansicht fasst die Liste unterschiedlich zusammen. Ein Tippen auf eine Kachel führt eine Stufe tiefer zu
 // genau diesem Video, erst unter Tage öffnet es sich. Die Zurück-Geste führt wieder hinauf an dieselbe Stelle.
-const VIEWS = ['day', 'week', 'month', 'year'];
-const VIEW_LABEL = { day: 'Tage', week: 'Wochen', month: 'Monate', year: 'Jahre' };
+const VIEWS = ['day', 'week', 'month'];
+const VIEW_LABEL = { day: 'Tage', week: 'Wochen', month: 'Monate' };
 let listView = 'day';
 let viewStack = [];   // Ansicht und Scrollstelle vor jedem Sprung in eine tiefere Stufe
 
@@ -505,11 +500,10 @@ function isoWeek(d) {
 function groupKeyOf(day) {
   if (listView === 'day') return day;
   if (listView === 'week') return dayKey(weekStart(day));
-  if (listView === 'month') return day.slice(0, 7);
-  return day.slice(0, 4);
+  return day.slice(0, 7);
 }
 
-// Heute, Gestern, Montag, 05.10. · Diese Woche, KW 39 · 21.–27.09. · Dieser Monat, August 2026 · Dieses Jahr, 2024
+// Heute, Gestern, Montag, 05.10. · Diese Woche, KW 39 · 21.–27.09. · Dieser Monat, August 2026
 function groupLabel(key) {
   const now = new Date(), today = dayKey(now);
   const dm = d => `${pad2(d.getDate())}.${pad2(d.getMonth() + 1)}.`;
@@ -529,15 +523,10 @@ function groupLabel(key) {
     const range = a.getMonth() === b.getMonth() ? `${pad2(a.getDate())}.–${dm(b)}` : `${dm(a)}–${dm(b)}`;
     return tr('KW {0}', isoWeek(a)) + ' · ' + range;
   }
-  if (listView === 'month') {
-    if (key === today.slice(0, 7)) return tr('Dieser Monat');
-    if (key === ago(0, -1, 1 - now.getDate()).slice(0, 7)) return tr('Letzter Monat');
-    const [y, m] = key.split('-').map(Number);
-    return new Date(y, m - 1, 1).toLocaleDateString(LOCALE[lang], { month: 'long', year: 'numeric' });
-  }
-  if (+key === now.getFullYear()) return tr('Dieses Jahr');
-  if (+key === now.getFullYear() - 1) return tr('Letztes Jahr');
-  return key;
+  if (key === today.slice(0, 7)) return tr('Dieser Monat');
+  if (key === ago(0, -1, 1 - now.getDate()).slice(0, 7)) return tr('Letzter Monat');
+  const [y, m] = key.split('-').map(Number);
+  return new Date(y, m - 1, 1).toLocaleDateString(LOCALE[lang], { month: 'long', year: 'numeric' });
 }
 
 const countText = (n, images) => images
@@ -551,25 +540,7 @@ function groupHead(key, n, images) {
   return h;
 }
 
-// Unter Jahre steht jeder Monat als eine Kachel mit dem neuesten Vorschaubild und der Anzahl
-function monthTile(m, list) {
-  const card = el('div', 'card mTile');
-  const th = el('div', 'th');
-  const info = el('div', 'info');
-  const [y, mo] = m.split('-').map(Number);
-  info.append(el('b', '', new Date(y, mo - 1, 1).toLocaleDateString(LOCALE[lang], { month: 'long' })));
-  card.append(th, info);
-  // Füllen erst, wenn alle Einträge des Monats gesammelt sind
-  card.fill = () => {
-    const t = list.map(x => (x.im ? x.im.thumb : x.c.thumb)).find(Boolean);
-    if (t) setThumb(th, t);
-    info.append(el('span', 'time', String(list.length)));
-  };
-  card.addEventListener('click', () => drillTo(`.day[data-key="${m}"]`, 'month'));
-  return card;
-}
-
-// Eine Stufe tiefer, zu dem Video, Bild oder Monat, das angetippt wurde
+// Eine Stufe tiefer, zu dem Video oder Bild, das angetippt wurde
 function drillTo(target, view = listView === 'month' ? 'week' : 'day') {
   viewStack.push({ view: listView, scroll: $('aGrid').scrollTop });
   history.pushState({ v: 'list' }, '');
